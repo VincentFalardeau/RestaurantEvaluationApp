@@ -26,8 +26,8 @@ public class Restaurant {
     }
 
     public boolean isValid(){
-        return mName != "" &&
-                mAddress != "" &&
+        return mName != null && mName != "" &&
+                mAddress != null && mAddress != "" &&
                 mMealQuality >= 0 && mMealQuality <= 5 &&
                 mServiceQuality >= 0 && mServiceQuality <= 5 &&
                 mGeneralRating >= 0 && mGeneralRating <= 5 &&
@@ -43,21 +43,12 @@ public class Restaurant {
         setAveragePrice(averagePrice);
     }
 
-    public Restaurant(String name, String address, int mealQuality, int serviceQuality, int generalRating, String averagePrice) throws NumberFormatException{
-        setName(name);
-        setAddress(address);
-        setMealQuality(mealQuality);
-        setServiceQuality(serviceQuality);
-        setGeneralRating(generalRating);
-        setAveragePrice(averagePrice);
-    }
-
     public String getName() {
         return mName;
     }
 
     public void setName(String name) {
-        this.mName = mName;
+        this.mName = name;
     }
 
     public String getAddress() {
@@ -65,7 +56,7 @@ public class Restaurant {
     }
 
     public void setAddress(String address) {
-        this.mAddress = mAddress;
+        this.mAddress = address;
     }
 
     public int getMealQuality() {
@@ -73,7 +64,7 @@ public class Restaurant {
     }
 
     public void setMealQuality(int mealQuality) {
-        this.mMealQuality = mMealQuality;
+        this.mMealQuality = mealQuality;
     }
 
     public int getServiceQuality() {
@@ -81,7 +72,7 @@ public class Restaurant {
     }
 
     public void setServiceQuality(int serviceQuality) {
-        this.mServiceQuality = mServiceQuality;
+        this.mServiceQuality = serviceQuality;
     }
 
     public int getGeneralRating() {
@@ -89,7 +80,7 @@ public class Restaurant {
     }
 
     public void setGeneralRating(int generalRating) {
-        this.mGeneralRating = mGeneralRating;
+        this.mGeneralRating = generalRating;
     }
 
     public float getAveragePrice() {
