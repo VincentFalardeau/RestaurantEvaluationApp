@@ -17,6 +17,7 @@ public class AddRestaurantActivity extends AppCompatActivity {
     private RadioGroup mServiceQuality;
     private RatingBar mGeneralRating;
     private EditText mAveragePrice;
+    private EditText mAveragePriceDecimals;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -29,6 +30,7 @@ public class AddRestaurantActivity extends AppCompatActivity {
         mServiceQuality = findViewById(R.id.service_quality);
         mGeneralRating = findViewById(R.id.general_rating);
         mAveragePrice = findViewById(R.id.avg_price);
+        mAveragePriceDecimals = findViewById(R.id.avg_price_decimals);
     }
 
 
@@ -43,7 +45,7 @@ public class AddRestaurantActivity extends AppCompatActivity {
         int mealQuality = mMealQuality.getCheckedRadioButtonId();
         int serviceQuality = mServiceQuality.getCheckedRadioButtonId();
         int generalRating = (int)mGeneralRating.getRating();
-        String averagePrice = mAveragePrice.getText().toString();
+        String averagePrice = mAveragePrice.getText().toString() + "." + mAveragePriceDecimals.getText().toString();
         String error = validateData(name, address, mealQuality, serviceQuality, generalRating, averagePrice);
         if(error != null){
             Toast.makeText(getApplicationContext(), error, Toast.LENGTH_LONG).show();
@@ -80,7 +82,7 @@ public class AddRestaurantActivity extends AppCompatActivity {
                 return "Le prix moyen ne peut pas être négatif";
             }
         }catch (NumberFormatException nfe){
-            return "Le prix moyen est de format invalide";
+            return "Le prix moyen n'est pas un nombre valide";
         }
         return null;
     }

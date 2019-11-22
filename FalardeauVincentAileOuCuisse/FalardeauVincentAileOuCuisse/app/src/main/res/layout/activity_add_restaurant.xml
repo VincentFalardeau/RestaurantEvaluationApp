@@ -11,12 +11,14 @@
         android:id="@+id/name"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Nom"/>
+        android:hint="Nom"
+        android:maxLength="30"/>
     <EditText
         android:id="@+id/address"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Adresse"/>
+        android:hint="Adresse"
+        android:maxLength="30"/>
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -92,11 +94,31 @@
         android:layout_height="wrap_content"
         android:numStars="5"
         android:stepSize="1"/>
-    <EditText
-        android:id="@+id/avg_price"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Prix moyen d'un plat"/>
+        android:orientation="horizontal">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Prix moyen d'un plat"/>
+        <EditText
+            android:id="@+id/avg_price"
+            android:layout_width="60dp"
+            android:layout_height="wrap_content"
+            android:inputType="number"
+            android:maxLength="4"/>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="."/>
+        <EditText
+            android:id="@+id/avg_price_decimals"
+            android:layout_width="40dp"
+            android:layout_height="wrap_content"
+            android:inputType="number"
+            android:maxLength="2"/>
+    </LinearLayout>
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

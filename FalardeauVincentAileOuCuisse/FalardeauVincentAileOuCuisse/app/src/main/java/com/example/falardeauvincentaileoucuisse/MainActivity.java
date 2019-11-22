@@ -92,5 +92,8 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
         ArrayAdapter<String> adaptor = new ArrayAdapter<String>(this, R.layout.restaurant, filteredRestaurantNameList);
         mList.setAdapter(adaptor);
+
+        mCurrentRestaurant = null;
+        mDetails.setText("");
     }
 }
