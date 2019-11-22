@@ -45,7 +45,11 @@ public class AddRestaurantActivity extends AppCompatActivity {
         int mealQuality = mMealQuality.getCheckedRadioButtonId();
         int serviceQuality = mServiceQuality.getCheckedRadioButtonId();
         int generalRating = (int)mGeneralRating.getRating();
-        String averagePrice = mAveragePrice.getText().toString() + "." + mAveragePriceDecimals.getText().toString();
+        String averagePrice = mAveragePrice.getText().toString();
+        String decimals = mAveragePriceDecimals.getText().toString();
+        if(!averagePrice.equals("") && !decimals.equals("")){
+            averagePrice = averagePrice + "." + decimals;
+        }
         String error = validateData(name, address, mealQuality, serviceQuality, generalRating, averagePrice);
         if(error != null){
             Toast.makeText(getApplicationContext(), error, Toast.LENGTH_LONG).show();
