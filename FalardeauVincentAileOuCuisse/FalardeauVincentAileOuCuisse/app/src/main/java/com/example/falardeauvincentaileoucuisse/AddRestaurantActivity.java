@@ -49,7 +49,8 @@ public class AddRestaurantActivity extends AppCompatActivity {
             Toast.makeText(getApplicationContext(), error, Toast.LENGTH_LONG).show();
         }
         else{
-            leave(view);
+            Toast.makeText(getApplicationContext(), "Ajout du restaurant", Toast.LENGTH_LONG).show();
+            //leave(view);
         }
     }
 

@@ -20,6 +20,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
     private Restaurant[] mRestaurants;
     private int[] mRestaurantsIndex;
+    private Restaurant mCurrentRestaurant;
 
     private ListView mList;
     private TextView mDetails;
@@ -27,7 +28,8 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
     @Override
     public void onItemClick (AdapterView<?> adapter, View vue, int position, long id) {
-        mDetails.setText(mRestaurants[mRestaurantsIndex[position]].toString());
+        mCurrentRestaurant = mRestaurants[mRestaurantsIndex[position]];
+        mDetails.setText(mCurrentRestaurant.toString());
     }
 
     @Override
@@ -53,6 +55,17 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         Intent intent = new Intent(this, AddRestaurantActivity.class);
         startActivity(intent);
     }
+
+    public void startDeleteRestaurantActivity(View view) {
+
+        if(mCurrentRestaurant != null){
+            Intent intent = new Intent(this, DeleteRestaurantActivity.class);
+            intent.putExtra("restaurant", mCurrentRestaurant.getName());
+            startActivity(intent);
+        }
+    }
+
+
 
     public void emptyLocalDataBase(View view) {
         Toast.makeText(getApplicationContext(), "La bd locale a été vidée avec succès", Toast.LENGTH_LONG).show();
