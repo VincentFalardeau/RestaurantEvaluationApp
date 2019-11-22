@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.ListView;
 import android.widget.RatingBar;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -15,7 +16,7 @@ import android.widget.Toast;
 import java.lang.reflect.Array;
 import java.util.ArrayList;
 
-public class MainActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
+public class MainActivity extends AppCompatActivity /*implements AdapterView.OnItemSelectedListener*/ {
 
     private boolean firstUse = true;
     private Restaurant[] restaurants;
@@ -26,34 +27,33 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     Restaurant r2;
     Restaurant r3;
 
-
-    private Spinner mList;
+    private ListView mList;
     private TextView mDetails;
     private RatingBar mRating;
 
-    @Override
-    public void onItemSelected (AdapterView<?> adapter, View vue, int position, long id) {
+//    @Override
+//    public void onItemSelected (AdapterView<?> adapter, View vue, int position, long id) {
+//
+//        if (!firstUse) {
+//            //String name = adapter.getItemAtPosition(position).toString();
+//            mDetails.setText(restaurants[restaurantsIndex[position]].toString());
+//            //Toast.makeText(this, "Vous avez choisi " + name, Toast.LENGTH_LONG).show();
+//        } else {
+//            firstUse = false;
+//        }
+//    }
 
-        if (!firstUse) {
-            //String name = adapter.getItemAtPosition(position).toString();
-            mDetails.setText(restaurants[restaurantsIndex[position]].toString());
-            //Toast.makeText(this, "Vous avez choisi " + name, Toast.LENGTH_LONG).show();
-        } else {
-            firstUse = false;
-        }
-    }
-
-    @Override
-    public void onNothingSelected(AdapterView<?> adaptateur) {
-        Toast.makeText(this, "Aucune sélection", Toast.LENGTH_SHORT).show();
-    }
+//    @Override
+//    public void onNothingSelected(AdapterView<?> adaptateur) {
+//        //Toast.makeText(this, "Aucune sélection", Toast.LENGTH_SHORT).show();
+//    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        mList = (Spinner) findViewById(R.id.restaurant_list);
+        mList = (ListView) findViewById(R.id.restaurant_list);
         mDetails = (TextView)findViewById(R.id.details);
         mRating = (RatingBar)findViewById(R.id.rating);
 
@@ -74,7 +74,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         ///mList.setAdapter(adaptateur);
 
         // enregistrement de l'activité comme écouteur
-        mList.setOnItemSelectedListener(this);
+        //mList.setOnItemSelectedListener(this);
     }
 
     public void startAddRestaurantActivity(View view) {
@@ -102,7 +102,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 rIndex++;
             }
         }
-        ArrayAdapter<String> adaptateur = new ArrayAdapter<String>(this, R.layout.restaurant, R.id.restaurant, currentRestaurants);
-        mList.setAdapter(adaptateur);
+        ArrayAdapter<String> adaptor = new ArrayAdapter<String>(this, R.layout.restaurant, currentRestaurants);
+        mList.setAdapter(adaptor);
     }
 }

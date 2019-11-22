@@ -22,7 +22,6 @@ public class Restaurant {
                     "Évaluation générale: " +  mGeneralRating +  "étoiles: " + "\n" +
                     "Prix moyen d'un plat: " + String.format ("%,.2f", mAveragePrice) + "\n";
         }
-
         return string;
     }
 
@@ -36,20 +35,21 @@ public class Restaurant {
     }
 
     public Restaurant(String name, String address, int mealQuality, int serviceQuality, int generalRating, float averagePrice){
-        mName = name;
-        mAddress = address;
-        mMealQuality = mealQuality;
-        mServiceQuality = serviceQuality;
-        mGeneralRating = generalRating;
-        mAveragePrice = averagePrice;
+        setName(name);
+        setAddress(address);
+        setMealQuality(mealQuality);
+        setServiceQuality(serviceQuality);
+        setGeneralRating(generalRating);
+        setAveragePrice(averagePrice);
     }
 
-    public Restaurant(String name, String address, int mealQuality, int serviceQuality, int generalRating){
-        mName = name;
-        mAddress = address;
-        mMealQuality = mealQuality;
-        mServiceQuality = serviceQuality;
-        mGeneralRating = generalRating;
+    public Restaurant(String name, String address, int mealQuality, int serviceQuality, int generalRating, String averagePrice) throws NumberFormatException{
+        setName(name);
+        setAddress(address);
+        setMealQuality(mealQuality);
+        setServiceQuality(serviceQuality);
+        setGeneralRating(generalRating);
+        setAveragePrice(averagePrice);
     }
 
     public String getName() {
@@ -100,8 +100,8 @@ public class Restaurant {
         this.mAveragePrice = averagePrice;
     }
 
-    public void setAveragePrice(String generalRating) throws NumberFormatException{
+    public void setAveragePrice(String averagePrice) throws NumberFormatException{
 
-        this.mAveragePrice = Float.parseFloat(generalRating);
+        this.mAveragePrice = Float.parseFloat(averagePrice);
     }
 }
