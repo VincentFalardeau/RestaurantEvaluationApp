@@ -85,8 +85,8 @@ public class AddRestaurantActivity extends AppCompatActivity {
         }
         try{
             float averagePriceFloat = Float.parseFloat(averagePrice);
-            if(averagePriceFloat < 0.0f){
-                return "Le prix moyen ne peut pas être négatif";
+            if(averagePriceFloat <= 0.0f){
+                return "Le prix moyen ne peut pas être égal à 0 ou négatif";
             }
         }catch (NumberFormatException nfe){
             return "Le prix moyen n'est pas un nombre valide";
