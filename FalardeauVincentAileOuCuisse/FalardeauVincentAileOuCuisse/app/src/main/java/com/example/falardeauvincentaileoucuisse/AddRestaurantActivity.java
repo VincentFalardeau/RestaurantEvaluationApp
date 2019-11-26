@@ -50,6 +50,9 @@ public class AddRestaurantActivity extends AppCompatActivity {
         if(!averagePrice.equals("") && !decimals.equals("")){
             averagePrice = averagePrice + "." + decimals;
         }
+        else if(averagePrice.equals("") && !decimals.equals("")){
+            averagePrice = "0." + decimals;
+        }
         String error = validateData(name, address, mealQuality, serviceQuality, generalRating, averagePrice);
         if(error != null){
             Toast.makeText(getApplicationContext(), error, Toast.LENGTH_LONG).show();
@@ -74,7 +77,7 @@ public class AddRestaurantActivity extends AppCompatActivity {
             return "Indiquez la qualité du service";
         }
         //Peu probable a cause de l'interface
-        if(generalRating < 0 || generalRating > 5){
+        if(generalRating < 1 || generalRating > 5){
             return "Donnez une évaluation générale";
         }
         if(averagePrice.length() <= 0){

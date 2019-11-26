@@ -19,7 +19,7 @@ public class Restaurant {
                     "Adresse: " + mAddress + "\n" +
                     "Qualité des plats: " + mRatingInWord[mMealQuality] + "\n" +
                     "Qualité du service: " + mRatingInWord[mServiceQuality] + "\n" +
-                    "Évaluation générale: " +  mGeneralRating +  "étoiles: " + "\n" +
+                    "Évaluation générale: " +  mGeneralRating +  " étoiles" + "\n" +
                     "Prix moyen d'un plat: " + String.format ("%,.2f", mAveragePrice) + "\n";
         }
         return string;
@@ -30,7 +30,7 @@ public class Restaurant {
                 mAddress != null && mAddress != "" &&
                 mMealQuality >= 0 && mMealQuality <= 5 &&
                 mServiceQuality >= 0 && mServiceQuality <= 5 &&
-                mGeneralRating >= 0 && mGeneralRating <= 5 &&
+                mGeneralRating >= 1 && mGeneralRating <= 5 &&
                 mAveragePrice > 0.0f;
     }
 
