@@ -2,6 +2,9 @@ package com.example.falardeauvincentaileoucuisse;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Context;
+import android.content.Intent;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.EditText;
@@ -36,7 +39,9 @@ public class AddRestaurantActivity extends AppCompatActivity {
 
 
     public void leave(View view) {
-        this.finish();
+        Intent intent = new Intent();
+        setResult(2,intent);
+        finish();
     }
 
     public void add(View view) {
@@ -58,8 +63,19 @@ public class AddRestaurantActivity extends AppCompatActivity {
             Toast.makeText(getApplicationContext(), error, Toast.LENGTH_LONG).show();
         }
         else{
-            Toast.makeText(getApplicationContext(), "Ajout du restaurant", Toast.LENGTH_LONG).show();
-            //leave(view);
+            //Toast.makeText(getApplicationContext(), "Ajout du restaurant", Toast.LENGTH_LONG).show();
+
+            String mealQualityStr = Restaurant.RATING_IN_WORDS.get(mealQuality - 1);
+            String serviceQualityStr = Restaurant.RATING_IN_WORDS.get(serviceQuality - 5 - 1);
+            //String generalRatingStr = ((Integer)generalRating).toString();
+
+            SQLiteDatabase db = openOrCreateDatabase("dbRestaurants", Context.MODE_PRIVATE,null);
+            db.execSQL("insert into Restaurants values(null, '" + name + "', '" + address + "', '" + mealQualityStr + "', '" + serviceQualityStr + "', " + Float.parseFloat(averagePrice) + ", " +  generalRating + ");");
+
+            Intent intent = new Intent();
+            setResult(1,intent);
+
+            finish();
         }
     }
 

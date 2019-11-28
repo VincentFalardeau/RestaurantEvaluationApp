@@ -28,7 +28,7 @@ import java.util.ArrayList;
 public class MainActivity extends AppCompatActivity implements AdapterView.OnItemClickListener {
 
     private SQLiteDatabase mDB;
-    private Restaurant[] mRestaurants;
+    private ArrayList<Restaurant> mRestaurants;
     private int[] mRestaurantsIndex;
     private Restaurant mCurrentRestaurant;
 
@@ -38,7 +38,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
     @Override
     public void onItemClick (AdapterView<?> adapter, View vue, int position, long id) {
-        mCurrentRestaurant = mRestaurants[mRestaurantsIndex[position]];
+        mCurrentRestaurant = mRestaurants.get(mRestaurantsIndex[position]);
         mDetails.setText(mCurrentRestaurant.toString());
     }
 
@@ -58,39 +58,53 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 "adresseRestaurant varchar," +
                 "qualiteBouffe varchar," +
                 "qualiteService varchar," +
-                "prixMoyen varchar," +
-                "nbEtoiles varchar);");
+                "prixMoyen real," +
+                "nbEtoiles integer);");
 
-        mDB.execSQL("insert into Restaurants values(null, 'St-Hubert', '10 rue duquet', 'moyen', 'bien', '25.00', 'moyen');");
+        //mDB.execSQL("insert into Restaurants values(null, 'St-Hubert', '10 rue duquet', 'moyen', 'bien', '25.00', '3');");
 
-        Cursor c = mDB.rawQuery("select * from Restaurants;", null);
-
-        mRestaurants = new Restaurant[1];
-
-        while(c.moveToNext()){
-            mRestaurants[0] = new Restaurant(
-                    c.getString(1),
-                    c.getString(2),
-                    3,
-                    4,
-                    3,
-                   25.00f);
-        }
-        c.close();
+        updateRestaurants();
 
         //Restaurant r1 = new Restaurant("St-Hubert", "10 rue duquet", 3, 4, 3, 25.00f);
         //Restaurant r2 = new Restaurant("Pizza 900", "21 boul. du faubourg", 2, 3, 4, 30.00f);
         //Restaurant r3 = new Restaurant("Le petit poucet", "55 chemin campagne", 5, 5, 5, 20.00f);
         //mRestaurants = new Restaurant[]{r1, r2, r3};
 
-        filterRestaurants(null);
-
         mList.setOnItemClickListener(this);
+    }
+
+    private void updateRestaurants(){
+        Cursor c = mDB.rawQuery("select * from Restaurants;", null);
+        mRestaurants = new ArrayList<Restaurant>();
+
+        while(c.moveToNext()){
+            mRestaurants.add(new Restaurant(
+                    c.getInt(0),
+                    c.getString(1),
+                    c.getString(2),
+                    c.getString(3),
+                    c.getString(4),
+                    c.getFloat(5),
+                    c.getInt(6)));
+        }
+        c.close();
+        filterRestaurants(null);
     }
 
     public void startAddRestaurantActivity(View view) {
         Intent intent = new Intent(this, AddRestaurantActivity.class);
-        startActivity(intent);
+        startActivityForResult(intent, 1);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data)
+    {
+        super.onActivityResult(requestCode, resultCode, data);
+        // check if the request code is same as what is passed  here it is 2
+        if(requestCode==1)
+        {
+            updateRestaurants();
+        }
     }
 
     public void startDeleteRestaurantActivity(View view) {
@@ -98,7 +112,8 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         if(mCurrentRestaurant != null){
             Intent intent = new Intent(this, DeleteRestaurantActivity.class);
             intent.putExtra("restaurant", mCurrentRestaurant.getName());
-            startActivity(intent);
+            intent.putExtra("id", mCurrentRestaurant.getId());
+            startActivityForResult(intent, 1);
         }
     }
 
@@ -113,15 +128,15 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     public void filterRestaurants(View view) {
         if(mRestaurants != null)
         {
-            int restaurantCount = mRestaurants.length;
+            int restaurantCount = mRestaurants.size();
             int currentRestaurantIndex = 0;
             int rating = (int)mRating.getRating();
             ArrayList<String> filteredRestaurantNameList = new ArrayList<>();
             mRestaurantsIndex = new int[restaurantCount];
 
             for(int i = 0; i < restaurantCount; i++){
-                if(mRestaurants[i].getGeneralRating() >= rating){
-                    filteredRestaurantNameList.add(mRestaurants[i].getName());
+                if(mRestaurants.get(i).getGeneralRating() >= rating){
+                    filteredRestaurantNameList.add(mRestaurants.get(i).getName());
                     mRestaurantsIndex[currentRestaurantIndex] = i;
                     currentRestaurantIndex++;
                 }
