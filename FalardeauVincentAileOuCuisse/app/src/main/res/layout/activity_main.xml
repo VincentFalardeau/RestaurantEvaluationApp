@@ -89,6 +89,12 @@ android:orientation="vertical">
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="50"
+                android:text="modifier"
+                android:onClick="startEditRestaurantActivity"/>
+            <Button
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="50"
                 android:text="supprimer"
                 android:onClick="startDeleteRestaurantActivity"/>
         </LinearLayout>

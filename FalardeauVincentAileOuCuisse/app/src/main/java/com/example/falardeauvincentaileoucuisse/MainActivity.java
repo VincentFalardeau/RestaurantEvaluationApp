@@ -150,7 +150,6 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                     PreparedStatement preparedStatement = null;
                     try {
                         preparedStatement = connection.prepareStatement(sql);
-                        //int i = c.getInt(0);
                         preparedStatement.setInt(1, c.getInt(0));
                         preparedStatement.setString(2, c.getString(1));
                         preparedStatement.setString(3, c.getString(2));
@@ -195,5 +194,20 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
             mDetails.setText("");
         }
 
+    }
+
+    public void startEditRestaurantActivity(View view) {
+        if(mCurrentRestaurant != null){
+            Intent intent = new Intent(this, EditRestaurantActivity.class);
+            intent.putExtra("id", mCurrentRestaurant.getId());
+            intent.putExtra("restaurant", mCurrentRestaurant.getName());
+            intent.putExtra("address", mCurrentRestaurant.getAddress());
+            intent.putExtra("mealQuality", mCurrentRestaurant.getMealQuality());
+            intent.putExtra("serviceQuality", mCurrentRestaurant.getServiceQuality());
+            intent.putExtra("rating", mCurrentRestaurant.getGeneralRating());
+            intent.putExtra("price", Float.toString(mCurrentRestaurant.getAveragePrice()));
+
+            startActivityForResult(intent, 1);
+        }
     }
 }

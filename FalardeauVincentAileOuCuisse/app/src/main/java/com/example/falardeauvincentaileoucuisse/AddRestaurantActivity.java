@@ -27,6 +27,7 @@ public class AddRestaurantActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_restaurant);
 
+
         mName = findViewById(R.id.name);
         mAddress = findViewById(R.id.address);
         mMealQuality = findViewById(R.id.meal_quality);
