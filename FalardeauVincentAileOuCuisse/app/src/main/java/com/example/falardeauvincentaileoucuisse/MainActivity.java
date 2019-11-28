@@ -20,6 +20,7 @@ import android.database.sqlite.SQLiteDatabase;
 import java.lang.reflect.Array;
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -100,7 +101,6 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     protected void onActivityResult(int requestCode, int resultCode, Intent data)
     {
         super.onActivityResult(requestCode, resultCode, data);
-        // check if the request code is same as what is passed  here it is 2
         if(requestCode==1)
         {
             updateRestaurants();
@@ -124,6 +124,50 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     }
 
     public void transferLocalDataBaseToCentralDataBase(View view) {
+        new Thread( new Runnable() {
+            public void run() {
+
+                try {
+                    Class.forName("oracle.jdbc.driver.OracleDriver");
+                } catch (ClassNotFoundException e) {
+                    e.printStackTrace();
+                }
+
+                String user = "FALARDEA";
+                String pwd = "oracle1";
+                String url = "jdbc:oracle:thin:@mercure.clg.qc.ca:1521:orcl";
+                Connection connection = null;
+                try {
+                    connection = DriverManager.getConnection(url,user,pwd);
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+
+                Cursor c = mDB.rawQuery("select * from Restaurants;", null);
+
+                while(c.moveToNext()){
+                    String sql = "insert into Restaurants values(?, ?, ?, ?, ?, ?, ?)";
+                    PreparedStatement preparedStatement = null;
+                    try {
+                        preparedStatement = connection.prepareStatement(sql);
+                        //int i = c.getInt(0);
+                        preparedStatement.setInt(1, c.getInt(0));
+                        preparedStatement.setString(2, c.getString(1));
+                        preparedStatement.setString(3, c.getString(2));
+                        preparedStatement.setString(4, c.getString(3));
+                        preparedStatement.setString(5, c.getString(4));
+                        preparedStatement.setFloat(6, c.getFloat(5));
+                        preparedStatement.setInt(7, c.getInt(6));
+                        preparedStatement.executeUpdate();
+                    } catch (SQLException e) {
+                        e.printStackTrace();
+                    }
+                }
+                c.close();
+            }
+        }).start();
+
+
         Toast.makeText(getApplicationContext(), "La bd locale a été transférée à la bd centrale avec succès", Toast.LENGTH_LONG).show();
     }
 
