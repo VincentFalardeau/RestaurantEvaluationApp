@@ -118,6 +118,8 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     }
 
     public void emptyLocalDataBase(View view) {
+        mDB.execSQL("delete from Restaurants");
+        updateRestaurants();
         Toast.makeText(getApplicationContext(), "La bd locale a été vidée avec succès", Toast.LENGTH_LONG).show();
     }
 
