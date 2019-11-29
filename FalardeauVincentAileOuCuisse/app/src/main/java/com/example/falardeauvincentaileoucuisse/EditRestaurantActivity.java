@@ -37,27 +37,64 @@ public class EditRestaurantActivity extends AppCompatActivity {
         mAveragePrice = findViewById(R.id.average_price);
 
         Intent intent = getIntent();
+
         mId = intent.getIntExtra("id", 0);
+
         String name = intent.getStringExtra("restaurant");
         mName.setText(name);
+
         String address = intent.getStringExtra("address");
         mAddress.setText(address);
+
         String mealQuality = intent.getStringExtra("mealQuality");
-        int mealRating = Restaurant.RATING_IN_WORDS.indexOf(mealQuality) + 1;
-        mMealQuality.check(mealRating);
+        for(int i = 1; i < mMealQuality.getChildCount(); i++)
+        {
+            RadioButton rb = (RadioButton)mMealQuality.getChildAt(i);
+            String ratingInWord = Restaurant.RATING_IN_WORDS.get(i - 1);
+            rb.setText(ratingInWord);
+            if(rb.getText().equals(mealQuality)){
+                rb.setChecked(true);
+            }
+        }
+
         String serviceQuality = intent.getStringExtra("serviceQuality");
-        int serviceRating = Restaurant.RATING_IN_WORDS.indexOf(serviceQuality) + 6;
-        mServiceQuality.check(serviceRating);
+        for(int i = 1; i < mServiceQuality.getChildCount(); i++)
+        {
+            RadioButton rb = (RadioButton)mServiceQuality.getChildAt(i);
+            String ratingInWord = Restaurant.RATING_IN_WORDS.get(i - 1);
+            rb.setText(ratingInWord);
+            if(rb.getText().equals(serviceQuality)){
+                rb.setChecked(true);
+            }
+        }
+
         int rating = intent.getIntExtra("rating", 0);
         mGeneralRating.setRating(rating);
+
         String price = intent.getStringExtra("price");
         mAveragePrice.setText(price);
     }
 
     public void edit(View view) {
+        String mealQuality = "";
+        for(int i = 1; i < mMealQuality.getChildCount(); i++)
+        {
+            RadioButton rb = (RadioButton)mMealQuality.getChildAt(i);
+            if(rb.isChecked()){
+                mealQuality = rb.getText().toString();
+                break;
+            }
+        }
+        String serviceQuality = "";
+        for(int i = 1; i < mServiceQuality.getChildCount(); i++)
+        {
+            RadioButton rb = (RadioButton)mServiceQuality.getChildAt(i);
+            if(rb.isChecked()){
+                serviceQuality = rb.getText().toString();
+                break;
+            }
+        }
 
-        int mealQuality = mMealQuality.getCheckedRadioButtonId();
-        int serviceQuality = mServiceQuality.getCheckedRadioButtonId();
         int rating = (int)mGeneralRating.getRating();
 
         String error = validateData(mealQuality, serviceQuality, rating);
@@ -65,27 +102,26 @@ public class EditRestaurantActivity extends AppCompatActivity {
             Toast.makeText(getApplicationContext(), error, Toast.LENGTH_LONG).show();
         }
         else {
-            String mealQualityStr = Restaurant.RATING_IN_WORDS.get(mealQuality % 5 - 1);
-            String serviceQualityStr = Restaurant.RATING_IN_WORDS.get(serviceQuality % 5 - 1);
+            //String mealQualityStr = Restaurant.RATING_IN_WORDS.get(mealQuality % 5 - 1);
+            //String serviceQualityStr = Restaurant.RATING_IN_WORDS.get(serviceQuality % 5 - 1);
 
-            SQLiteDatabase db = openOrCreateDatabase("dbRestaurants", Context.MODE_PRIVATE,null);
-            db.execSQL("update Restaurants set qualiteBouffe ='" + mealQualityStr + "', qualiteService = '" + serviceQualityStr + "', nbEtoiles = " + rating + "  where idRestaurant = " + mId);
+            SQLiteDatabase db = openOrCreateDatabase(MainActivity.SQLITE_DB_NAME, Context.MODE_PRIVATE,null);
+            db.execSQL("update Restaurants set qualiteBouffe ='" + mealQuality + "', qualiteService = '" + serviceQuality + "', nbEtoiles = " + rating + "  where idRestaurant = " + mId);
 
             Intent intent = new Intent();
-            setResult(1,intent);
+            setResult(MainActivity.UPDATE_DB_ACTIVITY_RESULT,intent);
 
             this.finish();
         }
     }
 
-    private String validateData(int mealQuality, int serviceQuality, int generalRating){
-        if(mealQuality == -1){
+    private String validateData(String mealQuality, String serviceQuality, int generalRating){
+        if(mealQuality.equals("")){
             return "Indiquez la qualité des plats";
         }
-        if(serviceQuality == -1){
+        if(serviceQuality.equals("")){
             return "Indiquez la qualité du service";
         }
-        //Peu probable a cause de l'interface
         if(generalRating < 1 || generalRating > 5){
             return "Donnez une évaluation générale";
         }

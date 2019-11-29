@@ -18,48 +18,16 @@ public class Restaurant {
 
     @Override
     public String toString(){
-        String string = "";
-        //if(true/*isValid()*/){
-            string = "Nom: " + mName + "\n" +
-                     "Adresse: " + mAddress + "\n" +
-                     "Qualité des plats: " + mMealQuality + "\n" +
-                     "Qualité du service: " + mServiceQuality + "\n" +
-                     "Évaluation générale: " +  mGeneralRating +  " étoiles" + "\n" +
-                     "Prix moyen d'un plat: " + String.format ("%,.2f", mAveragePrice) + "\n";
-        //}
-        return string;
+        return "Nom: " + mName + "\n" +
+                "Adresse: " + mAddress + "\n" +
+                "Qualité des plats: " + mMealQuality + "\n" +
+                "Qualité du service: " + mServiceQuality + "\n" +
+                "Évaluation générale: " +  mGeneralRating +  " étoiles" + "\n" +
+                "Prix moyen d'un plat: " + String.format ("%,.2f", mAveragePrice) + "\n";
     }
-
-//    public boolean isValid(){
-//
-//        return mName != null && mName != "" &&
-//                mAddress != null && mAddress != "" &&
-//                RATING_IN_WORDS.contains(mMealQuality) &&
-//                RATING_IN_WORDS.contains(mServiceQuality) &&
-//                RATING_IN_NUMBER.contains(mGeneralRating) &&
-//                priceIsValid();
-//    }
-
-//    public boolean priceIsValid(){
-//        try{
-//            float f = Float.parseFloat(mAveragePrice);
-//            return true;
-//        }catch (NumberFormatException e){
-//            return false;
-//        }
-//    }
 
     public Restaurant(int id, String name, String address, String mealQuality, String serviceQuality, float averagePrice, int generalRating){
         setId(id);
-        setName(name);
-        setAddress(address);
-        setMealQuality(mealQuality);
-        setServiceQuality(serviceQuality);
-        setGeneralRating(generalRating);
-        setAveragePrice(averagePrice);
-    }
-
-    public Restaurant(String name, String address, String mealQuality, String serviceQuality, float averagePrice, int generalRating){
         setName(name);
         setAddress(address);
         setMealQuality(mealQuality);
@@ -103,15 +71,6 @@ public class Restaurant {
     public int getGeneralRating() {
         return mGeneralRating;
     }
-
-//    public int getStarCount(){
-////        try{
-////            int stars = Integer.parseInt(mGeneralRating);
-////            return stars;
-////        }catch (NumberFormatException e){
-////            return 0;
-////        }
-////    }
 
     public void setGeneralRating(int generalRating) {
         this.mGeneralRating = generalRating;

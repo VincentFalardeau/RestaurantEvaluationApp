@@ -53,7 +53,6 @@
                 android:layout_height="wrap_content"
                 android:text="Qualité des plats"/>
             <RadioButton
-                android:id="@+id/meal_first_rb"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="Horrible"/>
@@ -84,7 +83,6 @@
                 android:layout_height="wrap_content"
                 android:text="Qualité du service"/>
             <RadioButton
-                android:id="@+id/service_first_rb"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="Horrible"/>

@@ -27,7 +27,6 @@ public class AddRestaurantActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_restaurant);
 
-
         mName = findViewById(R.id.name);
         mAddress = findViewById(R.id.address);
         mMealQuality = findViewById(R.id.meal_quality);
@@ -40,8 +39,6 @@ public class AddRestaurantActivity extends AppCompatActivity {
 
 
     public void leave(View view) {
-        Intent intent = new Intent();
-        setResult(2,intent);
         finish();
     }
 
@@ -64,17 +61,14 @@ public class AddRestaurantActivity extends AppCompatActivity {
             Toast.makeText(getApplicationContext(), error, Toast.LENGTH_LONG).show();
         }
         else{
-            //Toast.makeText(getApplicationContext(), "Ajout du restaurant", Toast.LENGTH_LONG).show();
-
             String mealQualityStr = Restaurant.RATING_IN_WORDS.get(mealQuality - 1);
             String serviceQualityStr = Restaurant.RATING_IN_WORDS.get(serviceQuality - 5 - 1);
-            //String generalRatingStr = ((Integer)generalRating).toString();
 
-            SQLiteDatabase db = openOrCreateDatabase("dbRestaurants", Context.MODE_PRIVATE,null);
+            SQLiteDatabase db = openOrCreateDatabase(MainActivity.SQLITE_DB_NAME, Context.MODE_PRIVATE,null);
             db.execSQL("insert into Restaurants values(null, '" + name + "', '" + address + "', '" + mealQualityStr + "', '" + serviceQualityStr + "', " + Float.parseFloat(averagePrice) + ", " +  generalRating + ");");
 
             Intent intent = new Intent();
-            setResult(1,intent);
+            setResult(MainActivity.UPDATE_DB_ACTIVITY_RESULT,intent);
 
             finish();
         }

@@ -28,6 +28,20 @@ import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity implements AdapterView.OnItemClickListener {
 
+    public static final int UPDATE_DB_ACTIVITY_RESULT = 1;
+
+    public static final String SQLITE_DB_NAME = "dbRestaurants";
+
+    public static final String CREATE_RESTAURANT_SQL =
+            "create table if not exists Restaurants(" +
+            "idrestaurant integer primary key autoincrement," +
+            "nomRestaurant varchar," +
+            "adresseRestaurant varchar," +
+            "qualiteBouffe varchar," +
+            "qualiteService varchar," +
+            "prixMoyen real," +
+            "nbEtoiles integer);";
+
     private SQLiteDatabase mDB;
     private ArrayList<Restaurant> mRestaurants;
     private int[] mRestaurantsIndex;
@@ -38,12 +52,6 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     private RatingBar mRating;
 
     @Override
-    public void onItemClick (AdapterView<?> adapter, View vue, int position, long id) {
-        mCurrentRestaurant = mRestaurants.get(mRestaurantsIndex[position]);
-        mDetails.setText(mCurrentRestaurant.toString());
-    }
-
-    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
@@ -52,26 +60,18 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         mDetails = (TextView) findViewById(R.id.details);
         mRating = (RatingBar) findViewById(R.id.rating);
 
-        mDB = openOrCreateDatabase("dbRestaurants", Context.MODE_PRIVATE,null);
-        mDB.execSQL("create table if not exists Restaurants(" +
-                "idrestaurant integer primary key autoincrement," +
-                "nomRestaurant varchar," +
-                "adresseRestaurant varchar," +
-                "qualiteBouffe varchar," +
-                "qualiteService varchar," +
-                "prixMoyen real," +
-                "nbEtoiles integer);");
-
-        //mDB.execSQL("insert into Restaurants values(null, 'St-Hubert', '10 rue duquet', 'moyen', 'bien', '25.00', '3');");
+        mDB = openOrCreateDatabase(SQLITE_DB_NAME, Context.MODE_PRIVATE,null);
+        mDB.execSQL(CREATE_RESTAURANT_SQL);
 
         updateRestaurants();
 
-        //Restaurant r1 = new Restaurant("St-Hubert", "10 rue duquet", 3, 4, 3, 25.00f);
-        //Restaurant r2 = new Restaurant("Pizza 900", "21 boul. du faubourg", 2, 3, 4, 30.00f);
-        //Restaurant r3 = new Restaurant("Le petit poucet", "55 chemin campagne", 5, 5, 5, 20.00f);
-        //mRestaurants = new Restaurant[]{r1, r2, r3};
-
         mList.setOnItemClickListener(this);
+    }
+
+    @Override
+    public void onItemClick (AdapterView<?> adapter, View vue, int position, long id) {
+        mCurrentRestaurant = mRestaurants.get(mRestaurantsIndex[position]);
+        mDetails.setText(mCurrentRestaurant.toString());
     }
 
     private void updateRestaurants(){
@@ -101,7 +101,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     protected void onActivityResult(int requestCode, int resultCode, Intent data)
     {
         super.onActivityResult(requestCode, resultCode, data);
-        if(requestCode==1)
+        if(requestCode == UPDATE_DB_ACTIVITY_RESULT)
         {
             updateRestaurants();
         }

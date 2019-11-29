@@ -1,11 +1,3 @@
 <resources>
-    <string name="app_name">FalardeauVincentAileOuCuisse</string>
-    <string-array name="rating_in_words">
-        <item></item>
-        <item>Horrible</item>
-        <item>Médiocre</item>
-        <item>Moyen</item>
-        <item>Bien</item>
-        <item>Excellent</item>
-    </string-array>
+    <string name="app_name">L\'aile ou la cuisse</string>
 </resources>

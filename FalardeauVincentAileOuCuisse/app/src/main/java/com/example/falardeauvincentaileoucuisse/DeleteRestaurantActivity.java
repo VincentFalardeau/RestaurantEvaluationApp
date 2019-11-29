@@ -27,14 +27,13 @@ public class DeleteRestaurantActivity extends AppCompatActivity {
     }
 
     public void delete(View view) {
-        SQLiteDatabase db = openOrCreateDatabase("dbRestaurants", Context.MODE_PRIVATE,null);
+        SQLiteDatabase db = openOrCreateDatabase(MainActivity.SQLITE_DB_NAME, Context.MODE_PRIVATE,null);
         db.execSQL("delete from Restaurants where idRestaurant = " + mId);
 
         Intent intent = new Intent();
-        setResult(1,intent);
+        setResult(MainActivity.UPDATE_DB_ACTIVITY_RESULT,intent);
 
         this.finish();
-        //Toast.makeText(getApplicationContext(), "Suppression du restaurant " + mName, Toast.LENGTH_LONG).show();
     }
 
     public void leave(View view) {
