@@ -76,7 +76,19 @@ public class AddRestaurantActivity extends AppCompatActivity {
                         generalRating + ");");
             }
             else{
+
+                ///////////////////////////////////////////////////////////////////////
+                //
+                //
                 //envoie a la bd distante ou locale???
+                //
+                //si distante, il faut partir un thread et tout, les donnes seront automitiquement
+                //mises a jour lors du load distant data activity
+                //
+                ////////////////////////////////////////////////////////////////////////
+
+
+
 //                db.execSQL("insert into RestaurantsD values(" +
 //                        "null, '" +
 //                        name + "', '" +

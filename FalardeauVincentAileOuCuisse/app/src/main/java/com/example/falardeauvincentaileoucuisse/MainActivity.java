@@ -81,6 +81,18 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     }
 
     private void updateRestaurants(){
+        //////////////////////////////////////////////////////////////////////
+        //
+        //
+        //regrouper les restos du meme nom et addresse pour calculer les moyennes et
+        //cest que qui sera sauvegarde dans larray dobjet
+        //Par contre, de cette facon, pourra ton modifier un resto?
+        //considerant que ses donnees sont des moyennes?
+        //faudra-t-il creer un array dobjet qui est local?
+        //
+        //
+        //
+        ////////////////////////////////////////////////////////////////////////
         Cursor c = null;
         if(usingLocalData){
             c = mDB.rawQuery("select * from Restaurants;", null);
