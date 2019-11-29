@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">L\'aile ou la cuisse</string>
+    <string name="local_data">Données locales</string>
+    <string name="distant_data">Données distantes</string>
 </resources>

@@ -12,18 +12,15 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.RatingBar;
-import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
-import android.database.sqlite.SQLiteDatabase;
+import android.widget.ToggleButton;
 
-import java.lang.reflect.Array;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
 import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity implements AdapterView.OnItemClickListener {
@@ -32,15 +29,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
     public static final String SQLITE_DB_NAME = "dbRestaurants";
 
-    public static final String CREATE_RESTAURANT_SQL =
-            "create table if not exists Restaurants(" +
-            "idrestaurant integer primary key autoincrement," +
-            "nomRestaurant varchar," +
-            "adresseRestaurant varchar," +
-            "qualiteBouffe varchar," +
-            "qualiteService varchar," +
-            "prixMoyen real," +
-            "nbEtoiles integer);";
+    public static boolean usingLocalData = true;
 
     private SQLiteDatabase mDB;
     private ArrayList<Restaurant> mRestaurants;
@@ -60,8 +49,25 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         mDetails = (TextView) findViewById(R.id.details);
         mRating = (RatingBar) findViewById(R.id.rating);
 
+        usingLocalData = true;
+
         mDB = openOrCreateDatabase(SQLITE_DB_NAME, Context.MODE_PRIVATE,null);
-        mDB.execSQL(CREATE_RESTAURANT_SQL);
+        mDB.execSQL("create table if not exists Restaurants(" +
+                "idrestaurant integer primary key autoincrement," +
+                "nomRestaurant varchar," +
+                "adresseRestaurant varchar," +
+                "qualiteBouffe varchar," +
+                "qualiteService varchar," +
+                "prixMoyen real," +
+                "nbEtoiles integer);");
+        mDB.execSQL("create table if not exists RestaurantsD(" +
+                "idrestaurant integer primary key autoincrement," +
+                "nomRestaurant varchar," +
+                "adresseRestaurant varchar," +
+                "qualiteBouffe varchar," +
+                "qualiteService varchar," +
+                "prixMoyen real," +
+                "nbEtoiles integer);");
 
         updateRestaurants();
 
@@ -75,7 +81,16 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     }
 
     private void updateRestaurants(){
-        Cursor c = mDB.rawQuery("select * from Restaurants;", null);
+        Cursor c = null;
+        if(usingLocalData){
+            c = mDB.rawQuery("select * from Restaurants;", null);
+        }
+        else{
+            Intent intent = new Intent(this, LoadDistantDataActivity.class);
+            startActivity(intent);
+            c = mDB.rawQuery("select * from RestaurantsD;", null);
+        }
+
         mRestaurants = new ArrayList<Restaurant>();
 
         while(c.moveToNext()){
@@ -105,6 +120,9 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         {
             updateRestaurants();
         }
+        else if(!usingLocalData){
+            updateRestaurants();
+        }
     }
 
     public void startDeleteRestaurantActivity(View view) {
@@ -120,6 +138,8 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     public void emptyLocalDataBase(View view) {
         mDB.execSQL("delete from Restaurants");
         updateRestaurants();
+
+
         Toast.makeText(getApplicationContext(), "La bd locale a été vidée avec succès", Toast.LENGTH_LONG).show();
     }
 
@@ -166,7 +186,6 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
             }
         }).start();
 
-
         Toast.makeText(getApplicationContext(), "La bd locale a été transférée à la bd centrale avec succès", Toast.LENGTH_LONG).show();
     }
 
@@ -209,5 +228,21 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
             startActivityForResult(intent, 1);
         }
+    }
+
+    public void changeDataSource(View view) {
+        ToggleButton tb = (ToggleButton)view;
+        if(tb.isChecked()){
+            getDistantData();
+        }
+        else{
+            usingLocalData = true;
+        }
+        updateRestaurants();
+    }
+
+    private void getDistantData(){
+        usingLocalData = false;
+        updateRestaurants();
     }
 }
