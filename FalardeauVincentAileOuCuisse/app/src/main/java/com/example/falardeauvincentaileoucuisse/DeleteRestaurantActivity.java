@@ -8,7 +8,6 @@ import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.TextView;
-import android.widget.Toast;
 
 public class DeleteRestaurantActivity extends AppCompatActivity {
 
@@ -32,7 +31,7 @@ public class DeleteRestaurantActivity extends AppCompatActivity {
 
 
         Intent intent = new Intent();
-        setResult(MainActivity.UPDATE_DB_ACTIVITY_RESULT,intent);
+        setResult(MainActivity.ACTIVITY_RESULT_UPDATE_UI,intent);
 
         this.finish();
     }

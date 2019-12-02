@@ -75,7 +75,7 @@ public class AddRestaurantActivity extends AppCompatActivity {
                     generalRating + ");");
 
             Intent intent = new Intent();
-            setResult(MainActivity.UPDATE_DB_ACTIVITY_RESULT,intent);
+            setResult(MainActivity.ACTIVITY_RESULT_UPDATE_UI,intent);
 
             finish();
         }

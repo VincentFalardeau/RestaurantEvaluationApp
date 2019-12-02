@@ -8,8 +8,6 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Message;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -28,7 +26,7 @@ import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity implements AdapterView.OnItemClickListener {
 
-    public static final int UPDATE_DB_ACTIVITY_RESULT = 1;
+    public static final int ACTIVITY_RESULT_UPDATE_UI = 1;
 
     public static final String SQLITE_DB_NAME = "dbRestaurants";
 
@@ -65,6 +63,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 "qualiteService varchar," +
                 "prixMoyen real," +
                 "nbEtoiles integer);");
+
         mDB.execSQL("create table if not exists RestaurantsD(" +
                 "idrestaurant integer primary key autoincrement," +
                 "nomRestaurant varchar," +
@@ -74,7 +73,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 "prixMoyen real," +
                 "nbEtoiles integer);");
 
-        updateRestaurants();
+        updateData();
 
         mList.setOnItemClickListener(this);
     }
@@ -83,15 +82,16 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     public void onItemClick (AdapterView<?> adapter, View vue, int position, long id) {
         mCurrentRestaurant = mRestaurants.get(mRestaurantsIndex[position]);
         mDetails.setText(mCurrentRestaurant.toString());
+
     }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data)
     {
         super.onActivityResult(requestCode, resultCode, data);
-        if(requestCode == UPDATE_DB_ACTIVITY_RESULT)
+        if(requestCode == ACTIVITY_RESULT_UPDATE_UI)
         {
-            updateRestaurants();
+            updateData();
         }
     }
 
@@ -179,7 +179,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     public void emptyLocalDataBase(View view) {
         if(usingLocalData){
             mDB.execSQL("delete from Restaurants");
-            updateRestaurants();
+            updateData();
 
             Toast.makeText(getApplicationContext(), "La bd locale a été vidée avec succès", Toast.LENGTH_LONG).show();
         }
@@ -191,48 +191,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
     public void transferLocalDataBaseToCentralDataBase(View view) {
         if(usingLocalData){
-            new Thread( new Runnable() {
-                public void run() {
-
-                    try {
-                        Class.forName("oracle.jdbc.driver.OracleDriver");
-                    } catch (ClassNotFoundException e) {
-                        e.printStackTrace();
-                    }
-
-                    String user = "FALARDEA";
-                    String pwd = "oracle1";
-                    String url = "jdbc:oracle:thin:@mercure.clg.qc.ca:1521:orcl";
-                    Connection connection = null;
-                    try {
-                        connection = DriverManager.getConnection(url,user,pwd);
-                    } catch (SQLException e) {
-                        e.printStackTrace();
-                    }
-
-                    Cursor c = mDB.rawQuery("select * from Restaurants;", null);
-
-                    while(c.moveToNext()){
-                        String sql = "insert into Restaurants values(?, ?, ?, ?, ?, ?, ?)";
-                        PreparedStatement preparedStatement = null;
-                        try {
-                            preparedStatement = connection.prepareStatement(sql);
-                            preparedStatement.setInt(1, c.getInt(0));
-                            preparedStatement.setString(2, c.getString(1));
-                            preparedStatement.setString(3, c.getString(2));
-                            preparedStatement.setString(4, c.getString(3));
-                            preparedStatement.setString(5, c.getString(4));
-                            preparedStatement.setFloat(6, c.getFloat(5));
-                            preparedStatement.setInt(7, c.getInt(6));
-                            preparedStatement.executeUpdate();
-                        } catch (SQLException e) {
-                            e.printStackTrace();
-                        }
-                    }
-                    c.close();
-                }
-            }).start();
-
+            transferDataBase();
             Toast.makeText(getApplicationContext(), "La bd locale a été transférée à la bd centrale avec succès", Toast.LENGTH_LONG).show();
         }
         else{
@@ -241,141 +200,171 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
     }
 
+    private void transferDataBase(){
+        new Thread( new Runnable() {
+            public void run() {
+
+                try {
+                    Class.forName("oracle.jdbc.driver.OracleDriver");
+                } catch (ClassNotFoundException e) {
+                    e.printStackTrace();
+                }
+
+                String user = "FALARDEA";
+                String pwd = "oracle1";
+                String url = "jdbc:oracle:thin:@mercure.clg.qc.ca:1521:orcl";
+                Connection connection = null;
+                try {
+                    connection = DriverManager.getConnection(url,user,pwd);
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+
+                Cursor c = mDB.rawQuery("select * from Restaurants;", null);
+
+                while(c.moveToNext()){
+                    String sql = "insert into Restaurants values(?, ?, ?, ?, ?, ?, ?)";
+                    PreparedStatement preparedStatement = null;
+                    try {
+                        preparedStatement = connection.prepareStatement(sql);
+                        preparedStatement.setInt(1, c.getInt(0));
+                        preparedStatement.setString(2, c.getString(1));
+                        preparedStatement.setString(3, c.getString(2));
+                        preparedStatement.setString(4, c.getString(3));
+                        preparedStatement.setString(5, c.getString(4));
+                        preparedStatement.setFloat(6, c.getFloat(5));
+                        preparedStatement.setInt(7, c.getInt(6));
+                        preparedStatement.executeUpdate();
+                    } catch (SQLException e) {
+                        e.printStackTrace();
+                    }
+                }
+                c.close();
+            }
+        }).start();
+    }
+
     public void changeDataSource(View view) {
         ToggleButton tb = (ToggleButton)view;
         usingLocalData = !tb.isChecked();
-        updateRestaurants();
+        updateData();
     }
 
-    private void updateRestaurants() {
+    private void updateData() {
 
         Cursor c = null;
         if (usingLocalData) {
             c = mDB.rawQuery("select * from Restaurants;", null);
-            mRestaurants = new ArrayList<Restaurant>();
-
-            while (c.moveToNext()) {
-                mRestaurants.add(new Restaurant(
-                        c.getInt(0),
-                        c.getString(1),
-                        c.getString(2),
-                        c.getString(3),
-                        c.getString(4),
-                        c.getFloat(5),
-                        c.getInt(6)));
-            }
-            c.close();
+            updateRestaurants(c);
             filterRestaurants(null);
+
         } else {
             DistantData distantData = new DistantData();
             distantData.execute();
         }
     }
 
+    private void updateRestaurants(Cursor c){
+        mRestaurants = new ArrayList<Restaurant>();
+
+        while (c.moveToNext()) {
+            mRestaurants.add(new Restaurant(
+                    c.getInt(0),
+                    c.getString(1),
+                    c.getString(2),
+                    c.getString(3),
+                    c.getString(4),
+                    c.getFloat(5),
+                    c.getInt(6)));
+        }
+        c.close();
+    }
+
+    private void populateDistantTable(){
+        while (true){
+            try {
+                if (!mResultSet.next()) break;
+                String name = mResultSet.getString(2);
+                String address = mResultSet.getString(3);
+                String mealQualityStr = mResultSet.getString(4);
+                String serviceQualityStr = mResultSet.getString(5);
+                Float averagePrice = mResultSet.getFloat(6);
+                int generalRating = mResultSet.getInt(7);
+                mDB.execSQL("insert into RestaurantsD values(" +
+                        "null, '" +
+                        name + "', '" +
+                        address + "', '" +
+                        mealQualityStr + "', '" +
+                        serviceQualityStr + "', " +
+                        averagePrice + ", " +
+                        generalRating + ");");
+
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+
+        }
+    }
+
+    private void retreiveDistantData(){
+        new Thread( new Runnable() {
+            public void run() {
+
+                try {
+                    Class.forName("oracle.jdbc.driver.OracleDriver");
+                } catch (ClassNotFoundException e) {
+                    e.printStackTrace();
+                }
+
+                String user = "FALARDEA";
+                String pwd = "oracle1";
+                String url = "jdbc:oracle:thin:@mercure.clg.qc.ca:1521:orcl";
+                Connection connection = null;
+                try {
+                    connection = DriverManager.getConnection(url,user,pwd);
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+                String sql = "select * from Restaurants";
+                try {
+                    PreparedStatement ps = connection.prepareStatement(sql);
+                    mResultSet = ps.executeQuery();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+        }).start();
+    }
+
 
     private class DistantData extends AsyncTask<Void, Integer, Void> {
-//        @Override
-//        protected void onPreExecute() {
-//            super.onPreExecute();
-//            Toast.makeText(getApplicationContext(),
-//                    "Début du traitement asynchrone",
-//                    Toast.LENGTH_SHORT).show();
-//        }
 
         @Override
         protected Void doInBackground(Void... args) {
             mResultSet = null;
-            new Thread( new Runnable() {
-                public void run() {
 
-                    try {
-                        Class.forName("oracle.jdbc.driver.OracleDriver");
-                    } catch (ClassNotFoundException e) {
-                        e.printStackTrace();
-                    }
-
-                    String user = "FALARDEA";
-                    String pwd = "oracle1";
-                    String url = "jdbc:oracle:thin:@mercure.clg.qc.ca:1521:orcl";
-                    Connection connection = null;
-                    try {
-                        connection = DriverManager.getConnection(url,user,pwd);
-                    } catch (SQLException e) {
-                        e.printStackTrace();
-                    }
-                    String sql = "select * from Restaurants";
-                    try {
-                        PreparedStatement ps = connection.prepareStatement(sql);
-                        mResultSet = ps.executeQuery();
-                    } catch (SQLException e) {
-                        e.printStackTrace();
-                    }
-                }
-            }).start();
+            retreiveDistantData();
 
             while(mResultSet == null){
                 try {
-                    Thread.sleep(250);
+                    Thread.sleep(100);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
             }
-            SQLiteDatabase db = openOrCreateDatabase(MainActivity.SQLITE_DB_NAME, Context.MODE_PRIVATE,null);
-            db.execSQL("delete from restaurantsD");
-            while (true){
-                try {
-                    if (!mResultSet.next()) break;
-                    //int id = mResultSet.getInt(0);
-                    String name = mResultSet.getString(2);
-                    String address = mResultSet.getString(3);
-                    String mealQualityStr = mResultSet.getString(4);
-                    String serviceQualityStr = mResultSet.getString(5);
-                    Float averagePrice = mResultSet.getFloat(6);
-                    int generalRating = mResultSet.getInt(7);
-                    db.execSQL("insert into RestaurantsD values(" +
-                            "null, '" +
-                            name + "', '" +
-                            address + "', '" +
-                            mealQualityStr + "', '" +
-                            serviceQualityStr + "', " +
-                            averagePrice + ", " +
-                            generalRating + ");");
 
-                } catch (SQLException e) {
-                    e.printStackTrace();
-                }
+            mDB.execSQL("delete from restaurantsD");
 
-            }
+            populateDistantTable();
+
             Cursor c = mDB.rawQuery("select * from RestaurantsD;", null);
-            mRestaurants = new ArrayList<Restaurant>();
-
-            while(c.moveToNext()){
-                mRestaurants.add(new Restaurant(
-                        c.getInt(0),
-                        c.getString(1),
-                        c.getString(2),
-                        c.getString(3),
-                        c.getString(4),
-                        c.getFloat(5),
-                        c.getInt(6)));
-            }
-            c.close();
+            updateRestaurants(c);
             return null;
         }
-
-//        @Override
-//        protected void onProgressUpdate(Integer... valeurs) {
-//            super.onProgressUpdate(valeurs);
-//            // mise à jour de la barre de progression
-//            //mBarre.setProgress(valeurs[0]);
-//        }
 
         @Override
         protected void onPostExecute(Void resultat) {
             filterRestaurants(null);
-//            Toast.makeText(getApplicationContext(),
-//                    "Le traitement asynchrone est terminé",
-//                    Toast.LENGTH_SHORT).show();
         }
     }
 }

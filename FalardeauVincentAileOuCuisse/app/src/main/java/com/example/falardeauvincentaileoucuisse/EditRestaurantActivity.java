@@ -7,7 +7,6 @@ import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.EditText;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.RatingBar;
@@ -109,7 +108,7 @@ public class EditRestaurantActivity extends AppCompatActivity {
             db.execSQL("update Restaurants set qualiteBouffe ='" + mealQuality + "', qualiteService = '" + serviceQuality + "', nbEtoiles = " + rating + "  where idRestaurant = " + mId);
 
             Intent intent = new Intent();
-            setResult(MainActivity.UPDATE_DB_ACTIVITY_RESULT,intent);
+            setResult(MainActivity.ACTIVITY_RESULT_UPDATE_UI,intent);
 
             this.finish();
         }
