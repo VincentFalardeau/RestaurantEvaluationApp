@@ -65,41 +65,14 @@ public class AddRestaurantActivity extends AppCompatActivity {
             String serviceQualityStr = Restaurant.RATING_IN_WORDS.get(serviceQuality - 5 - 1);
 
             SQLiteDatabase db = openOrCreateDatabase(MainActivity.SQLITE_DB_NAME, Context.MODE_PRIVATE,null);
-            if(MainActivity.usingLocalData){
-                db.execSQL("insert into Restaurants values(" +
-                        "null, '" +
-                        name + "', '" +
-                        address + "', '" +
-                        mealQualityStr + "', '" +
-                        serviceQualityStr + "', " +
-                        Float.parseFloat(averagePrice) + ", " +
-                        generalRating + ");");
-            }
-            else{
-
-                ///////////////////////////////////////////////////////////////////////
-                //
-                //
-                //envoie a la bd distante ou locale???
-                //
-                //si distante, il faut partir un thread et tout, les donnes seront automitiquement
-                //mises a jour lors du load distant data activity
-                //
-                ////////////////////////////////////////////////////////////////////////
-
-
-
-//                db.execSQL("insert into RestaurantsD values(" +
-//                        "null, '" +
-//                        name + "', '" +
-//                        address + "', '" +
-//                        mealQualityStr + "', '" +
-//                        serviceQualityStr + "', " +
-//                        Float.parseFloat(averagePrice) + ", " +
-//                        generalRating + ");");
-
-            }
-
+            db.execSQL("insert into Restaurants values(" +
+                    "null, '" +
+                    name + "', '" +
+                    address + "', '" +
+                    mealQualityStr + "', '" +
+                    serviceQualityStr + "', " +
+                    Float.parseFloat(averagePrice) + ", " +
+                    generalRating + ");");
 
             Intent intent = new Intent();
             setResult(MainActivity.UPDATE_DB_ACTIVITY_RESULT,intent);
