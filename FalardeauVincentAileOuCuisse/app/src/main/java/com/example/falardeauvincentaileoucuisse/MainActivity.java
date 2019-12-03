@@ -284,6 +284,10 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
             try {
                 if (!mResultSet.next()) break;
                 String name = mResultSet.getString(2);
+                if(name.contains("'")){
+                    int index = name.indexOf("'") - 1;
+                    name = String.format("%s'%s", name.substring(0, index + 1), name.substring(index + 1));
+                }
                 String address = mResultSet.getString(3);
                 String mealQualityStr = mResultSet.getString(4);
                 String serviceQualityStr = mResultSet.getString(5);
@@ -306,33 +310,28 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     }
 
     private void retreiveDistantData(){
-        new Thread( new Runnable() {
-            public void run() {
+        try {
+            Class.forName("oracle.jdbc.driver.OracleDriver");
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
 
-                try {
-                    Class.forName("oracle.jdbc.driver.OracleDriver");
-                } catch (ClassNotFoundException e) {
-                    e.printStackTrace();
-                }
-
-                String user = "FALARDEA";
-                String pwd = "oracle1";
-                String url = "jdbc:oracle:thin:@mercure.clg.qc.ca:1521:orcl";
-                Connection connection = null;
-                try {
-                    connection = DriverManager.getConnection(url,user,pwd);
-                } catch (SQLException e) {
-                    e.printStackTrace();
-                }
-                String sql = "select * from Restaurants";
-                try {
-                    PreparedStatement ps = connection.prepareStatement(sql);
-                    mResultSet = ps.executeQuery();
-                } catch (SQLException e) {
-                    e.printStackTrace();
-                }
-            }
-        }).start();
+        String user = "FALARDEA";
+        String pwd = "oracle1";
+        String url = "jdbc:oracle:thin:@mercure.clg.qc.ca:1521:orcl";
+        Connection connection = null;
+        try {
+            connection = DriverManager.getConnection(url,user,pwd);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        String sql = "select * from Restaurants";
+        try {
+            PreparedStatement ps = connection.prepareStatement(sql);
+            mResultSet = ps.executeQuery();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 
 
@@ -343,14 +342,6 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
             mResultSet = null;
 
             retreiveDistantData();
-
-            while(mResultSet == null){
-                try {
-                    Thread.sleep(100);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-            }
 
             mDB.execSQL("delete from restaurantsD");
 

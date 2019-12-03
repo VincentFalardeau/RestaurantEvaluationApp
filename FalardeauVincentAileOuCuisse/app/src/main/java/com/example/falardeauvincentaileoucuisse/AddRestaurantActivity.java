@@ -62,6 +62,11 @@ public class AddRestaurantActivity extends AppCompatActivity {
 
     public void add(View view) {
         String name = mName.getText().toString();
+        if(name.contains("'")){
+            int index = name.indexOf("'") - 1;
+            name = String.format("%s'%s", name.substring(0, index + 1), name.substring(index + 1));
+        }
+
         String address = mAddress.getText().toString();
 
         String mealQuality = "";
@@ -101,23 +106,14 @@ public class AddRestaurantActivity extends AppCompatActivity {
             Toast.makeText(getApplicationContext(), error, Toast.LENGTH_LONG).show();
         }
         else{
-            //String mealQualityStr = Restaurant.RATING_IN_WORDS.get(mealQuality - 1);
-            //String serviceQualityStr = Restaurant.RATING_IN_WORDS.get(serviceQuality - 1);
-
-            //SQLiteDatabase db = openOrCreateDatabase(MainActivity.SQLITE_DB_NAME, Context.MODE_PRIVATE,null);
-            try{
-                MainActivity.getDB().execSQL("insert into Restaurants values(" +
-                        "null, '" +
-                        name + "', '" +
-                        address + "', '" +
-                        mealQuality + "', '" +
-                        serviceQuality + "', " +
-                        Float.parseFloat(averagePrice) + ", " +
-                        generalRating + ");");
-            }
-            catch (Exception e){
-                e.printStackTrace();
-            }
+            MainActivity.getDB().execSQL("insert into Restaurants values(" +
+                    "null, '" +
+                    name + "', '" +
+                    address + "', '" +
+                    mealQuality + "', '" +
+                    serviceQuality + "', " +
+                    Float.parseFloat(averagePrice) + ", " +
+                    generalRating + ");");
 
 
             Intent intent = new Intent();

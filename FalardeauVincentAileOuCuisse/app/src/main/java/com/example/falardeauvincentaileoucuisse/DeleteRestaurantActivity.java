@@ -4,10 +4,17 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Context;
 import android.content.Intent;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.TextView;
+
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
 
 public class DeleteRestaurantActivity extends AppCompatActivity {
 
@@ -27,14 +34,65 @@ public class DeleteRestaurantActivity extends AppCompatActivity {
 
     public void delete(View view) {
         //SQLiteDatabase db = openOrCreateDatabase(MainActivity.SQLITE_DB_NAME, Context.MODE_PRIVATE,null);
-        MainActivity.getDB().execSQL("delete from Restaurants where idRestaurant = " + mId);
+        //if(MainActivity.usingLocalData){
+            MainActivity.getDB().execSQL("delete from Restaurants where idRestaurant = " + mId);
+            Intent intent = new Intent();
+            setResult(MainActivity.ACTIVITY_RESULT_UPDATE_UI,intent);
+
+            leave(null);
+        //}
+        //else{
+            //DistantData dd = new DistantData();
+            //dd.execute();
+        //}
 
 
-        Intent intent = new Intent();
-        setResult(MainActivity.ACTIVITY_RESULT_UPDATE_UI,intent);
 
-        this.finish();
+
     }
+
+//    private class DistantData extends AsyncTask<Void, Integer, Void> {
+//
+//        @Override
+//        protected Void doInBackground(Void... args) {
+//            try {
+//                Class.forName("oracle.jdbc.driver.OracleDriver");
+//            } catch (ClassNotFoundException e) {
+//                e.printStackTrace();
+//            }
+//
+//            String user = "FALARDEA";
+//            String pwd = "oracle1";
+//            String url = "jdbc:oracle:thin:@mercure.clg.qc.ca:1521:orcl";
+//            Connection connection = null;
+//            try {
+//                connection = DriverManager.getConnection(url,user,pwd);
+//            } catch (SQLException e) {
+//                e.printStackTrace();
+//            }
+//            String sql = "delete from restaurants where idRestaurant =";
+//            try {
+//                PreparedStatement ps = connection.prepareStatement(sql);
+//                ps.setInt(1, mId);
+//                ps.executeUpdate();
+//            } catch (SQLException e) {
+//                e.printStackTrace();
+//            }
+//
+//            MainActivity.getDB().execSQL("delete from restaurantsD where id = " + mId);
+//
+//            return null;
+//        }
+//
+//        @Override
+//        protected void onPostExecute(Void resultat){
+//            Intent intent = new Intent();
+//            setResult(MainActivity.ACTIVITY_RESULT_UPDATE_UI,intent);
+//
+//            leave(null);
+//        }
+   // }
+
 
     public void leave(View view) {
         this.finish();
