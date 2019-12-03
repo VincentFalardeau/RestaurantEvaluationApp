@@ -62,7 +62,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 "qualiteService varchar," +
                 "prixMoyen real," +
                 "nbEtoiles integer);");
-        mDB.execSQL("drop table RestaurantsD");
+        //mDB.execSQL("drop table RestaurantsD");
         mDB.execSQL("create table if not exists RestaurantsD(" +
                 "idrestaurant integer primary key autoincrement," +
                 "nomRestaurant varchar," +
