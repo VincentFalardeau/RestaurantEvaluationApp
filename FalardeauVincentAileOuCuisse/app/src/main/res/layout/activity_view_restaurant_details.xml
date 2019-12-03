@@ -94,22 +94,27 @@
             android:textSize="30sp"/>
     </LinearLayout>
     <TextView
+        android:id="@+id/onestar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="1 étoile:   0"/>
     <TextView
+        android:id="@+id/twostar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="2 étoiles: 0"/>
     <TextView
+        android:id="@+id/treestar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="3 étoiles: 0"/>
     <TextView
+        android:id="@+id/fourstar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="4 étoiles: 0"/>
     <TextView
+        android:id="@+id/fivestar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="20dp"

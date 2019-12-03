@@ -19,6 +19,11 @@ public class ViewRestaurantDetailsActivity extends AppCompatActivity {
     private RatingBar mGeneralRating;
     private TextView mAveragePrice;
     private TextView mVoteCount;
+    private TextView mOnestar;
+    private TextView mTwoStar;
+    private TextView mTreeStar;
+    private TextView mFourStar;
+    private TextView mFiveStar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,6 +37,11 @@ public class ViewRestaurantDetailsActivity extends AppCompatActivity {
         mGeneralRating = findViewById(R.id.general_rating);
         mAveragePrice = findViewById(R.id.average_price);
         mVoteCount = findViewById(R.id.vote_count);
+        mOnestar = findViewById(R.id.onestar);
+        mTwoStar = findViewById(R.id.twostar);
+        mTreeStar = findViewById(R.id.treestar);
+        mFourStar = findViewById(R.id.fourstar);
+        mFiveStar = findViewById(R.id.fivestar);
 
         Intent intent = getIntent();
 
@@ -57,6 +67,24 @@ public class ViewRestaurantDetailsActivity extends AppCompatActivity {
 
         String voteCount = intent.getStringExtra("voteCount");
         mVoteCount.setText(voteCount);
+
+
+
+
+        String star = intent.getStringExtra("onestar");
+        mOnestar.setText("1 étoile:   " + star);
+
+        star = intent.getStringExtra("twostar");
+        mTwoStar.setText("2 étoile:  " +star);
+
+        star = intent.getStringExtra("treestar");
+        mTreeStar.setText("3 étoile:  " +star);
+
+        star = intent.getStringExtra("fourstar");
+        mFourStar.setText("4 étoile:  " +star);
+
+        star = intent.getStringExtra("fivestar");
+        mFiveStar.setText("5 étoiles:  " +star);
     }
 
     public void leave(View view) {

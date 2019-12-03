@@ -62,7 +62,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 "qualiteService varchar," +
                 "prixMoyen real," +
                 "nbEtoiles integer);");
-        //mDB.execSQL("drop table RestaurantsD");
+        mDB.execSQL("drop table RestaurantsD");
         mDB.execSQL("create table if not exists RestaurantsD(" +
                 "idrestaurant integer primary key autoincrement," +
                 "nomRestaurant varchar," +
@@ -71,13 +71,12 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 "qualiteService varchar," +
                 "prixMoyen real," +
                 "nbEtoiles integer," +
-                "nbVotes integer);");
-                //+
-                /*"unEtoile integer," +
+                "nbVotes integer, " +
+                "unEtoile integer," +
                 "deuxEtoile integer," +
                 "troisEtoile integer," +
                 "quatreEtoile integer," +
-                "cinqEtoile integer);");*/
+                "cinqEtoile integer);");
 
         updateData();
 
@@ -97,8 +96,13 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
             intent.putExtra("mealQuality", mCurrentRestaurant.getMealQuality());
             intent.putExtra("serviceQuality", mCurrentRestaurant.getServiceQuality());
             intent.putExtra("rating", mCurrentRestaurant.getGeneralRating());
-            intent.putExtra("price", Float.toString(mCurrentRestaurant.getAveragePrice()));
+            intent.putExtra("price", String.format ("%,.2f", mCurrentRestaurant.getAveragePrice()) + " $CAD");
             intent.putExtra("voteCount", Integer.toString(mCurrentRestaurant.getVoteCount()));
+            intent.putExtra("onestar", Integer.toString(mCurrentRestaurant.getStars()[0]));
+            intent.putExtra("twostar", Integer.toString(mCurrentRestaurant.getStars()[1]));
+            intent.putExtra("treestar", Integer.toString(mCurrentRestaurant.getStars()[2]));
+            intent.putExtra("fourstar", Integer.toString(mCurrentRestaurant.getStars()[3]));
+            intent.putExtra("fivestar", Integer.toString(mCurrentRestaurant.getStars()[4]));
 
             startActivity(intent);
         }
@@ -301,6 +305,12 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         }
         else{
             while (c.moveToNext()) {
+                int[] stars = new int[5];
+                stars[0] = c.getInt(8);
+                stars[1] = c.getInt(9);
+                stars[2] = c.getInt(10);
+                stars[3] = c.getInt(11);
+                stars[4] = c.getInt(12);
                 mRestaurants.add(new Restaurant(
                         c.getInt(0),
                         c.getString(1),
@@ -309,7 +319,8 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                         c.getString(4),
                         c.getFloat(5),
                         c.getInt(6),
-                        c.getInt(7)));
+                        c.getInt(7),
+                        stars));
 
             }
         }
@@ -333,6 +344,12 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 Float averagePrice = mResultSet.getFloat(6);
                 int generalRating = mResultSet.getInt(7);
                 int nbVotes = mResultSet.getInt(8);
+                int[] stars = new int[5];
+                stars[0] = mResultSet.getInt(9);
+                stars[1] = mResultSet.getInt(10);
+                stars[2] = mResultSet.getInt(11);
+                stars[3] = mResultSet.getInt(12);
+                stars[4] = mResultSet.getInt(13);
                 mDB.execSQL("insert into RestaurantsD values(" +
                         id + ", '" +
                         name + "', '" +
@@ -341,7 +358,12 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                         serviceQualityStr + "', " +
                         averagePrice + ", " +
                         generalRating + "," +
-                        nbVotes + ");");
+                        nbVotes + "," +
+                        stars[0] + "," +
+                        stars[1] + "," +
+                        stars[2] + "," +
+                        stars[3] + "," +
+                        stars[4] + ");");
 
             } catch (SQLException e) {
                 e.printStackTrace();

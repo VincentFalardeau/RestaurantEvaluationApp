@@ -16,6 +16,7 @@ public class Restaurant {
     private float mAveragePrice;
     private int mGeneralRating;
     private int mVoteCount;
+    private int[] mStars;
 
     @Override
     public String toString(){
@@ -36,7 +37,7 @@ public class Restaurant {
         setGeneralRating(generalRating);
         setAveragePrice(averagePrice);
     }
-    public Restaurant(int id, String name, String address, String mealQuality, String serviceQuality, float averagePrice, int generalRating, int voteCount){
+    public Restaurant(int id, String name, String address, String mealQuality, String serviceQuality, float averagePrice, int generalRating, int voteCount, int[] stars){
         setId(id);
         setName(name);
         setAddress(address);
@@ -45,6 +46,7 @@ public class Restaurant {
         setGeneralRating(generalRating);
         setAveragePrice(averagePrice);
         setVoteCount(voteCount);
+        setStars(stars);
     }
 
     public String getName() {
@@ -109,5 +111,13 @@ public class Restaurant {
 
     public void setVoteCount(int VoteCount) {
         this.mVoteCount = VoteCount;
+    }
+
+    public int[] getStars() {
+        return mStars;
+    }
+
+    public void setStars(int[] stars) {
+        this.mStars = stars;
     }
 }
