@@ -104,8 +104,8 @@ public class EditRestaurantActivity extends AppCompatActivity {
             //String mealQualityStr = Restaurant.RATING_IN_WORDS.get(mealQuality % 5 - 1);
             //String serviceQualityStr = Restaurant.RATING_IN_WORDS.get(serviceQuality % 5 - 1);
 
-            SQLiteDatabase db = openOrCreateDatabase(MainActivity.SQLITE_DB_NAME, Context.MODE_PRIVATE,null);
-            db.execSQL("update Restaurants set qualiteBouffe ='" + mealQuality + "', qualiteService = '" + serviceQuality + "', nbEtoiles = " + rating + "  where idRestaurant = " + mId);
+            //SQLiteDatabase db = openOrCreateDatabase(MainActivity.SQLITE_DB_NAME, Context.MODE_PRIVATE,null);
+            MainActivity.getDB().execSQL("update Restaurants set qualiteBouffe ='" + mealQuality + "', qualiteService = '" + serviceQuality + "', nbEtoiles = " + rating + "  where idRestaurant = " + mId);
 
             Intent intent = new Intent();
             setResult(MainActivity.ACTIVITY_RESULT_UPDATE_UI,intent);

@@ -26,8 +26,8 @@ public class DeleteRestaurantActivity extends AppCompatActivity {
     }
 
     public void delete(View view) {
-        SQLiteDatabase db = openOrCreateDatabase(MainActivity.SQLITE_DB_NAME, Context.MODE_PRIVATE,null);
-        db.execSQL("delete from Restaurants where idRestaurant = " + mId);
+        //SQLiteDatabase db = openOrCreateDatabase(MainActivity.SQLITE_DB_NAME, Context.MODE_PRIVATE,null);
+        MainActivity.getDB().execSQL("delete from Restaurants where idRestaurant = " + mId);
 
 
         Intent intent = new Intent();

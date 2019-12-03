@@ -32,7 +32,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
     public static boolean usingLocalData = true;
 
-    private SQLiteDatabase mDB;
+    private static SQLiteDatabase mDB;
     private ArrayList<Restaurant> mRestaurants;
     private int[] mRestaurantsIndex;
     private Restaurant mCurrentRestaurant;
@@ -52,8 +52,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         mDetails = (TextView) findViewById(R.id.details);
         mRating = (RatingBar) findViewById(R.id.rating);
 
-        usingLocalData = true;
-
+        usingLocalData = true;;
         mDB = openOrCreateDatabase(SQLITE_DB_NAME, Context.MODE_PRIVATE,null);
         mDB.execSQL("create table if not exists Restaurants(" +
                 "idrestaurant integer primary key autoincrement," +
@@ -366,5 +365,9 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         protected void onPostExecute(Void resultat) {
             filterRestaurants(null);
         }
+    }
+
+    public static SQLiteDatabase getDB(){
+        return mDB;
     }
 }
