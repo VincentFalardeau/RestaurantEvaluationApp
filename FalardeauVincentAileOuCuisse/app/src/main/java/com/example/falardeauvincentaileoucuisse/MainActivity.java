@@ -62,7 +62,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 "qualiteService varchar," +
                 "prixMoyen real," +
                 "nbEtoiles integer);");
-
+        //mDB.execSQL("drop table RestaurantsD");
         mDB.execSQL("create table if not exists RestaurantsD(" +
                 "idrestaurant integer primary key autoincrement," +
                 "nomRestaurant varchar," +
@@ -70,7 +70,14 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 "qualiteBouffe varchar," +
                 "qualiteService varchar," +
                 "prixMoyen real," +
-                "nbEtoiles integer);");
+                "nbEtoiles integer," +
+                "nbVotes integer);");
+                //+
+                /*"unEtoile integer," +
+                "deuxEtoile integer," +
+                "troisEtoile integer," +
+                "quatreEtoile integer," +
+                "cinqEtoile integer);");*/
 
         updateData();
 
@@ -80,7 +87,21 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     @Override
     public void onItemClick (AdapterView<?> adapter, View vue, int position, long id) {
         mCurrentRestaurant = mRestaurants.get(mRestaurantsIndex[position]);
-        mDetails.setText(mCurrentRestaurant.toString());
+        if(usingLocalData){
+            mDetails.setText(mCurrentRestaurant.toString());
+        }
+        else{
+            Intent intent = new Intent(this, ViewRestaurantDetailsActivity.class);
+            intent.putExtra("restaurant", mCurrentRestaurant.getName());
+            intent.putExtra("address", mCurrentRestaurant.getAddress());
+            intent.putExtra("mealQuality", mCurrentRestaurant.getMealQuality());
+            intent.putExtra("serviceQuality", mCurrentRestaurant.getServiceQuality());
+            intent.putExtra("rating", mCurrentRestaurant.getGeneralRating());
+            intent.putExtra("price", Float.toString(mCurrentRestaurant.getAveragePrice()));
+            intent.putExtra("voteCount", Integer.toString(mCurrentRestaurant.getVoteCount()));
+
+            startActivity(intent);
+        }
 
     }
 
@@ -265,17 +286,34 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
     private void updateRestaurants(Cursor c){
         mRestaurants = new ArrayList<Restaurant>();
+        if(usingLocalData){
+            while (c.moveToNext()) {
+                mRestaurants.add(new Restaurant(
+                        c.getInt(0),
+                        c.getString(1),
+                        c.getString(2),
+                        c.getString(3),
+                        c.getString(4),
+                        c.getFloat(5),
+                        c.getInt(6)));
 
-        while (c.moveToNext()) {
-            mRestaurants.add(new Restaurant(
-                    c.getInt(0),
-                    c.getString(1),
-                    c.getString(2),
-                    c.getString(3),
-                    c.getString(4),
-                    c.getFloat(5),
-                    c.getInt(6)));
+            }
         }
+        else{
+            while (c.moveToNext()) {
+                mRestaurants.add(new Restaurant(
+                        c.getInt(0),
+                        c.getString(1),
+                        c.getString(2),
+                        c.getString(3),
+                        c.getString(4),
+                        c.getFloat(5),
+                        c.getInt(6),
+                        c.getInt(7)));
+
+            }
+        }
+
         c.close();
     }
 
@@ -283,6 +321,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         while (true){
             try {
                 if (!mResultSet.next()) break;
+                int id = mResultSet.getInt(1);
                 String name = mResultSet.getString(2);
                 if(name.contains("'")){
                     int index = name.indexOf("'") - 1;
@@ -293,14 +332,16 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 String serviceQualityStr = mResultSet.getString(5);
                 Float averagePrice = mResultSet.getFloat(6);
                 int generalRating = mResultSet.getInt(7);
+                int nbVotes = mResultSet.getInt(8);
                 mDB.execSQL("insert into RestaurantsD values(" +
-                        "null, '" +
+                        id + ", '" +
                         name + "', '" +
                         address + "', '" +
                         mealQualityStr + "', '" +
                         serviceQualityStr + "', " +
                         averagePrice + ", " +
-                        generalRating + ");");
+                        generalRating + "," +
+                        nbVotes + ");");
 
             } catch (SQLException e) {
                 e.printStackTrace();
@@ -325,7 +366,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        String sql = "select * from Restaurants";
+        String sql = "select * from myRestaurants";
         try {
             PreparedStatement ps = connection.prepareStatement(sql);
             mResultSet = ps.executeQuery();
@@ -349,6 +390,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
             Cursor c = mDB.rawQuery("select * from RestaurantsD;", null);
             updateRestaurants(c);
+
             return null;
         }
 
