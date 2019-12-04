@@ -70,7 +70,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 "qualiteBouffe varchar," +
                 "qualiteService varchar," +
                 "prixMoyen real," +
-                "nbEtoiles integer," +
+                "nbEtoiles real," +
                 "nbVotes integer, " +
                 "unEtoile integer," +
                 "deuxEtoile integer," +
@@ -318,7 +318,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                         c.getString(3),
                         c.getString(4),
                         c.getFloat(5),
-                        c.getInt(6),
+                        c.getFloat(6),
                         c.getInt(7),
                         stars));
 
@@ -332,26 +332,26 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         while (true){
             try {
                 if (!mResultSet.next()) break;
-                int id = mResultSet.getInt(1);
-                String name = mResultSet.getString(2);
+                //int id = mResultSet.getInt(1);
+                String name = mResultSet.getString(1);
                 if(name.contains("'")){
                     int index = name.indexOf("'") - 1;
                     name = String.format("%s'%s", name.substring(0, index + 1), name.substring(index + 1));
                 }
-                String address = mResultSet.getString(3);
-                String mealQualityStr = mResultSet.getString(4);
-                String serviceQualityStr = mResultSet.getString(5);
-                Float averagePrice = mResultSet.getFloat(6);
-                int generalRating = mResultSet.getInt(7);
-                int nbVotes = mResultSet.getInt(8);
+                String address = mResultSet.getString(2);
+                String mealQualityStr = mResultSet.getString(3);
+                String serviceQualityStr = mResultSet.getString(4);
+                Float averagePrice = mResultSet.getFloat(5);
+                float generalRating = mResultSet.getFloat(6);
+                int nbVotes = mResultSet.getInt(7);
                 int[] stars = new int[5];
-                stars[0] = mResultSet.getInt(9);
-                stars[1] = mResultSet.getInt(10);
-                stars[2] = mResultSet.getInt(11);
-                stars[3] = mResultSet.getInt(12);
-                stars[4] = mResultSet.getInt(13);
+                stars[0] = mResultSet.getInt(8);
+                stars[1] = mResultSet.getInt(9);
+                stars[2] = mResultSet.getInt(10);
+                stars[3] = mResultSet.getInt(11);
+                stars[4] = mResultSet.getInt(12);
                 mDB.execSQL("insert into RestaurantsD values(" +
-                        id + ", '" +
+                        null + ", '" +
                         name + "', '" +
                         address + "', '" +
                         mealQualityStr + "', '" +
@@ -388,7 +388,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        String sql = "select * from myRestaurants";
+        String sql = "select * from myRestaurants2";
         try {
             PreparedStatement ps = connection.prepareStatement(sql);
             mResultSet = ps.executeQuery();

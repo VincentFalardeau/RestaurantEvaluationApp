@@ -67,7 +67,7 @@ public class EditRestaurantActivity extends AppCompatActivity {
             }
         }
 
-        int rating = intent.getIntExtra("rating", 0);
+        float rating = intent.getFloatExtra("rating", 0f);
         mGeneralRating.setRating(rating);
 
         String price = intent.getStringExtra("price");

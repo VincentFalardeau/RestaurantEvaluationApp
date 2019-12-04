@@ -14,7 +14,7 @@ public class Restaurant {
     private String mMealQuality;
     private String mServiceQuality;
     private float mAveragePrice;
-    private int mGeneralRating;
+    private float mGeneralRating;
     private int mVoteCount;
     private int[] mStars;
 
@@ -24,7 +24,7 @@ public class Restaurant {
                 "Adresse: " + mAddress + "\n" +
                 "Qualité des plats: " + mMealQuality + "\n" +
                 "Qualité du service: " + mServiceQuality + "\n" +
-                "Évaluation générale: " +  mGeneralRating +  " étoiles" + "\n" +
+                "Évaluation générale: " +  String.format ("%,.0f", mGeneralRating) +  " étoiles" + "\n" +
                 "Prix moyen d'un plat: " + String.format ("%,.2f", mAveragePrice) + "\n";
     }
 
@@ -37,7 +37,7 @@ public class Restaurant {
         setGeneralRating(generalRating);
         setAveragePrice(averagePrice);
     }
-    public Restaurant(int id, String name, String address, String mealQuality, String serviceQuality, float averagePrice, int generalRating, int voteCount, int[] stars){
+    public Restaurant(int id, String name, String address, String mealQuality, String serviceQuality, float averagePrice, float generalRating, int voteCount, int[] stars){
         setId(id);
         setName(name);
         setAddress(address);
@@ -81,11 +81,11 @@ public class Restaurant {
         this.mServiceQuality = serviceQuality;
     }
 
-    public int getGeneralRating() {
+    public float getGeneralRating() {
         return mGeneralRating;
     }
 
-    public void setGeneralRating(int generalRating) {
+    public void setGeneralRating(float generalRating) {
         this.mGeneralRating = generalRating;
     }
 

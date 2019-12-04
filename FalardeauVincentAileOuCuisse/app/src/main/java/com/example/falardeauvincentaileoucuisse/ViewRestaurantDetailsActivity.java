@@ -58,7 +58,7 @@ public class ViewRestaurantDetailsActivity extends AppCompatActivity {
         String serviceQuality = intent.getStringExtra("serviceQuality");
         mServiceQuality.setText(serviceQuality);
 
-        int rating = intent.getIntExtra("rating", 0);
+        float rating = intent.getIntExtra("rating", 0);
         mGeneralRating.setRating(rating);
         mGeneralRating.setIsIndicator(true);
 
