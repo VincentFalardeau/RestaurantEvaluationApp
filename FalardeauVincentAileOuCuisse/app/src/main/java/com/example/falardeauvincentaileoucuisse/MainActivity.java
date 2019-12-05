@@ -93,6 +93,8 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
             Intent intent = new Intent(this, ViewRestaurantDetailsActivity.class);
             intent.putExtra("restaurant", mCurrentRestaurant.getName());
             intent.putExtra("address", mCurrentRestaurant.getAddress());
+
+            //cause des bugs
             intent.putExtra("mealQuality", mCurrentRestaurant.getMealQuality());
             intent.putExtra("serviceQuality", mCurrentRestaurant.getServiceQuality());
             intent.putExtra("rating", mCurrentRestaurant.getGeneralRating());
@@ -339,8 +341,8 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                     name = String.format("%s'%s", name.substring(0, index + 1), name.substring(index + 1));
                 }
                 String address = mResultSet.getString(2);
-                String mealQualityStr = mResultSet.getString(3);
-                String serviceQualityStr = mResultSet.getString(4);
+                String mealQualityStr = Restaurant.RATING_IN_WORDS.get(mResultSet.getInt(3) - 1);
+                String serviceQualityStr = Restaurant.RATING_IN_WORDS.get(mResultSet.getInt(4) - 1);
                 Float averagePrice = mResultSet.getFloat(5);
                 float generalRating = mResultSet.getFloat(6);
                 int nbVotes = mResultSet.getInt(7);

@@ -58,7 +58,7 @@ public class ViewRestaurantDetailsActivity extends AppCompatActivity {
         String serviceQuality = intent.getStringExtra("serviceQuality");
         mServiceQuality.setText(serviceQuality);
 
-        float rating = intent.getIntExtra("rating", 0);
+        float rating = intent.getFloatExtra("rating", 0);
         mGeneralRating.setRating(rating);
         mGeneralRating.setIsIndicator(true);
 
@@ -66,7 +66,7 @@ public class ViewRestaurantDetailsActivity extends AppCompatActivity {
         mAveragePrice.setText(price);
 
         String voteCount = intent.getStringExtra("voteCount");
-        mVoteCount.setText(voteCount);
+        mVoteCount.setText("(" + rating + ") " + voteCount + " votes");
 
 
 
