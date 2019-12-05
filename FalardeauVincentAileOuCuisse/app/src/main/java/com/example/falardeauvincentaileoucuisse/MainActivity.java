@@ -71,20 +71,20 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 "prixMoyen real," +
                 "nbEtoiles integer);");
         //mDB.execSQL("drop table RestaurantsD");
-        mDB.execSQL("create table if not exists RestaurantsD(" +
-                "idrestaurant integer primary key autoincrement," +
-                "nomRestaurant varchar," +
-                "adresseRestaurant varchar," +
-                "qualiteBouffe varchar," +
-                "qualiteService varchar," +
-                "prixMoyen real," +
-                "nbEtoiles real," +
-                "nbVotes integer, " +
-                "unEtoile integer," +
-                "deuxEtoile integer," +
-                "troisEtoile integer," +
-                "quatreEtoile integer," +
-                "cinqEtoile integer);");
+//        mDB.execSQL("create table if not exists RestaurantsD(" +
+//                "idrestaurant integer primary key autoincrement," +
+//                "nomRestaurant varchar," +
+//                "adresseRestaurant varchar," +
+//                "qualiteBouffe varchar," +
+//                "qualiteService varchar," +
+//                "prixMoyen real," +
+//                "nbEtoiles real," +
+//                "nbVotes integer, " +
+//                "unEtoile integer," +
+//                "deuxEtoile integer," +
+//                "troisEtoile integer," +
+//                "quatreEtoile integer," +
+//                "cinqEtoile integer);");
 
         updateData();
 
@@ -106,7 +106,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
             intent.putExtra("mealQuality", mCurrentRestaurant.getMealQuality());
             intent.putExtra("serviceQuality", mCurrentRestaurant.getServiceQuality());
             intent.putExtra("rating",mCurrentRestaurant.getGeneralRating());
-            intent.putExtra("price", String.format ("%,.2f", mCurrentRestaurant.getAveragePrice()) + " $CAD");
+            intent.putExtra("price", String.format ("%,.2f", mCurrentRestaurant.getAveragePrice()) + " $ CAD");
             intent.putExtra("voteCount", Integer.toString(mCurrentRestaurant.getVoteCount()));
             intent.putExtra("onestar", Integer.toString(mCurrentRestaurant.getStars()[0]));
             intent.putExtra("twostar", Integer.toString(mCurrentRestaurant.getStars()[1]));
@@ -338,75 +338,129 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                         c.getInt(6)));
 
             }
+            c.close();
         }
         else{
-            while (c.moveToNext()) {
-                int[] stars = new int[5];
-                stars[0] = c.getInt(8);
-                stars[1] = c.getInt(9);
-                stars[2] = c.getInt(10);
-                stars[3] = c.getInt(11);
-                stars[4] = c.getInt(12);
-                mRestaurants.add(new Restaurant(
-                        c.getInt(0),
-                        c.getString(1),
-                        c.getString(2),
-                        c.getString(3),
-                        c.getString(4),
-                        c.getFloat(5),
-                        c.getFloat(6),
-                        c.getInt(7),
-                        stars));
+//            while (c.moveToNext()) {
+////                int[] stars = new int[5];
+////                stars[0] = c.getInt(8);
+////                stars[1] = c.getInt(9);
+////                stars[2] = c.getInt(10);
+////                stars[3] = c.getInt(11);
+////                stars[4] = c.getInt(12);
+////                mRestaurants.add(new Restaurant(
+////                        c.getInt(0),
+////                        c.getString(1),
+////                        c.getString(2),
+////                        c.getString(3),
+////                        c.getString(4),
+////                        c.getFloat(5),
+////                        c.getFloat(6),
+////                        c.getInt(7),
+////                        stars));
+////
+////            }
+            while (true) {
+                try {
+                    if (!mResultSet.next()) break;
+                    //int id = mResultSet.getInt(1);
+                    String name = mResultSet.getString(1);
+//                    if (name.contains("'")) {
+//                        int index = name.indexOf("'") - 1;
+//                        name = String.format("%s'%s", name.substring(0, index + 1), name.substring(index + 1));
+//                    }
+                    String address = mResultSet.getString(2);
+                    int mealQuality = Math.round(mResultSet.getFloat(3)) - 1;
+                    String mealQualityStr = Restaurant.RATING_IN_WORDS.get(mealQuality);
+                    int serviceQuality = Math.round(mResultSet.getFloat(4)) - 1;
+                    String serviceQualityStr = Restaurant.RATING_IN_WORDS.get(serviceQuality);
+                    float averagePrice = mResultSet.getFloat(5);
+                    float generalRating = mResultSet.getFloat(6);
+                    generalRating = (float) Math.round((double) generalRating * 10f) / 10.0f;
+                    int nbVotes = mResultSet.getInt(7);
+                    int[] stars = new int[5];
+                    stars[0] = mResultSet.getInt(8);
+                    stars[1] = mResultSet.getInt(9);
+                    stars[2] = mResultSet.getInt(10);
+                    stars[3] = mResultSet.getInt(11);
+                    stars[4] = mResultSet.getInt(12);
+                    mRestaurants.add(new Restaurant(
+                            0,
+                            name,
+                            address,
+                            mealQualityStr,
+                            serviceQualityStr,
+                            averagePrice,
+                            generalRating,
+                            nbVotes,
+                            stars));
+//                    mDB.execSQL("insert into RestaurantsD values(" +
+//                            null + ", '" +
+//                            name + "', '" +
+//                            address + "', '" +
+//                            mealQualityStr + "', '" +
+//                            serviceQualityStr + "', " +
+//                            averagePrice + ", " +
+//                            generalRating + "," +
+//                            nbVotes + "," +
+//                            stars[0] + "," +
+//                            stars[1] + "," +
+//                            stars[2] + "," +
+//                            stars[3] + "," +
+//                            stars[4] + ");");
 
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
             }
         }
 
-        c.close();
+
     }
 
     private void populateDistantTable(){
         while (true){
-            try {
-                if (!mResultSet.next()) break;
-                //int id = mResultSet.getInt(1);
-                String name = mResultSet.getString(1);
-                if(name.contains("'")){
-                    int index = name.indexOf("'") - 1;
-                    name = String.format("%s'%s", name.substring(0, index + 1), name.substring(index + 1));
-                }
-                String address = mResultSet.getString(2);
-                int mealQuality = Math.round(mResultSet.getFloat(3)) - 1;
-                String mealQualityStr = Restaurant.RATING_IN_WORDS.get(mealQuality);
-                int serviceQuality = Math.round(mResultSet.getFloat(4)) - 1;
-                String serviceQualityStr = Restaurant.RATING_IN_WORDS.get(serviceQuality);
-                float averagePrice = mResultSet.getFloat(5);
-                float generalRating = mResultSet.getFloat(6);
-                generalRating = (float)Math.round((double)generalRating * 10f) / 10.0f;
-                int nbVotes = mResultSet.getInt(7);
-                int[] stars = new int[5];
-                stars[0] = mResultSet.getInt(8);
-                stars[1] = mResultSet.getInt(9);
-                stars[2] = mResultSet.getInt(10);
-                stars[3] = mResultSet.getInt(11);
-                stars[4] = mResultSet.getInt(12);
-                mDB.execSQL("insert into RestaurantsD values(" +
-                        null + ", '" +
-                        name + "', '" +
-                        address + "', '" +
-                        mealQualityStr + "', '" +
-                        serviceQualityStr + "', " +
-                        averagePrice + ", " +
-                        generalRating + "," +
-                        nbVotes + "," +
-                        stars[0] + "," +
-                        stars[1] + "," +
-                        stars[2] + "," +
-                        stars[3] + "," +
-                        stars[4] + ");");
+                try {
+                    if (!mResultSet.next()) break;
+                    //int id = mResultSet.getInt(1);
+                    String name = mResultSet.getString(1);
+                    if(name.contains("'")){
+                        int index = name.indexOf("'") - 1;
+                        name = String.format("%s'%s", name.substring(0, index + 1), name.substring(index + 1));
+                    }
+                    String address = mResultSet.getString(2);
+                    int mealQuality = Math.round(mResultSet.getFloat(3)) - 1;
+                    String mealQualityStr = Restaurant.RATING_IN_WORDS.get(mealQuality);
+                    int serviceQuality = Math.round(mResultSet.getFloat(4)) - 1;
+                    String serviceQualityStr = Restaurant.RATING_IN_WORDS.get(serviceQuality);
+                    float averagePrice = mResultSet.getFloat(5);
+                    float generalRating = mResultSet.getFloat(6);
+                    generalRating = (float)Math.round((double)generalRating * 10f) / 10.0f;
+                    int nbVotes = mResultSet.getInt(7);
+                    int[] stars = new int[5];
+                    stars[0] = mResultSet.getInt(8);
+                    stars[1] = mResultSet.getInt(9);
+                    stars[2] = mResultSet.getInt(10);
+                    stars[3] = mResultSet.getInt(11);
+                    stars[4] = mResultSet.getInt(12);
+                    mDB.execSQL("insert into RestaurantsD values(" +
+                            null + ", '" +
+                            name + "', '" +
+                            address + "', '" +
+                            mealQualityStr + "', '" +
+                            serviceQualityStr + "', " +
+                            averagePrice + ", " +
+                            generalRating + "," +
+                            nbVotes + "," +
+                            stars[0] + "," +
+                            stars[1] + "," +
+                            stars[2] + "," +
+                            stars[3] + "," +
+                            stars[4] + ");");
 
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
 
         }
     }
@@ -445,12 +499,12 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
             retreiveDistantData();
 
-            mDB.execSQL("delete from restaurantsD");
+            //mDB.execSQL("delete from restaurantsD");
 
-            populateDistantTable();
+            //populateDistantTable();
 
-            Cursor c = mDB.rawQuery("select * from RestaurantsD;", null);
-            updateRestaurants(c);
+            //Cursor c = mDB.rawQuery("select * from RestaurantsD;", null);
+            updateRestaurants(null);
 
             return null;
         }
