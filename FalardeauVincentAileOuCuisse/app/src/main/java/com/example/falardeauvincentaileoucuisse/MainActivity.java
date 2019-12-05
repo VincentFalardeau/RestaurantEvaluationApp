@@ -28,6 +28,7 @@ import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity implements AdapterView.OnItemClickListener {
 
+    //Si une activité termine avec ce code, on met à jour l'interface avec les données (qui ont probablement changées)
     public static final int ACTIVITY_RESULT_UPDATE_UI = 1;
 
     public static final String SQLITE_DB_NAME = "dbRestaurants";
@@ -59,7 +60,9 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         mDetailsLayout = (LinearLayout)findViewById(R.id.details_layout);
         mRating = (RatingBar) findViewById(R.id.rating);
 
-        usingLocalData = true;;
+        usingLocalData = true;
+
+        //Création de la table dans sqlite
         mDB = openOrCreateDatabase(SQLITE_DB_NAME, Context.MODE_PRIVATE,null);
         mDB.execSQL("create table if not exists Restaurants(" +
                 "idrestaurant integer primary key autoincrement," +
@@ -77,11 +80,16 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
     @Override
     public void onItemClick (AdapterView<?> adapter, View vue, int position, long id) {
+
+        //assignation du nouveau restaurant courant
         mCurrentRestaurant = mRestaurants.get(mRestaurantsIndex[position]);
+
         if(usingLocalData){
+            //Affichage du resto courant en mode local
             mDetails.setText(mCurrentRestaurant.toString());
         }
         else{
+            //On démarre une activité pour voir le restaurant de façon plus détaillée en mode distant
             Intent intent = new Intent(this, ViewRestaurantDetailsActivity.class);
             intent.putExtra("restaurant", mCurrentRestaurant.getName());
             intent.putExtra("address", mCurrentRestaurant.getAddress());
@@ -121,6 +129,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
             ArrayList<String> filteredRestaurantNameList = new ArrayList<>();
             mRestaurantsIndex = new int[restaurantCount];
 
+            //Pour chaque restaurant, on ajoute les restaurants qui correspondent au filtre dans une liste de restaurants filtée
             for(int i = 0; i < restaurantCount; i++){
                 if(mRestaurants.get(i).getGeneralRating() >= rating){
                     filteredRestaurantNameList.add(mRestaurants.get(i).getName());
@@ -129,9 +138,11 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 }
             }
 
+            //Adatper pour la listeview
             ArrayAdapter<String> adaptor = new ArrayAdapter<String>(this, R.layout.restaurant, filteredRestaurantNameList);
             mList.setAdapter(adaptor);
 
+            //Aucun restaurant ne sera sélectionné
             mCurrentRestaurant = null;
             mDetails.setText("");
         }
@@ -166,7 +177,6 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
             }
             else{
                 Toast.makeText(getApplicationContext(), "Sélectionnez un restaurant", Toast.LENGTH_SHORT).show();
-
             }
         }
         else{
@@ -195,7 +205,9 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
     public void emptyLocalDataBase(View view) {
         if(usingLocalData){
+            //Effecer tout de la table sqlite locale
             mDB.execSQL("delete from Restaurants");
+            //mettre à jour les données courantes
             updateData();
 
             Toast.makeText(getApplicationContext(), "La bd locale a été vidée avec succès", Toast.LENGTH_LONG).show();
@@ -208,6 +220,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
     public void transferLocalDataBaseToCentralDataBase(View view) {
         if(usingLocalData){
+            //transfer de la bd locale à la bd distante
             transferDataBase();
             Toast.makeText(getApplicationContext(), "La bd locale a été transférée à la bd centrale avec succès", Toast.LENGTH_LONG).show();
         }
@@ -236,10 +249,11 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 } catch (SQLException e) {
                     e.printStackTrace();
                 }
-
+                //Obtention des données locales
                 Cursor c = mDB.rawQuery("select * from Restaurants;", null);
 
                 while(c.moveToNext()){
+                    //Pour chaque ligne de la table locale, on envoie à oracle avec un insert dans la table restaurants
                     String sql = "insert into Restaurants values(?, ?, ?, ?, ?, ?, ?)";
                     PreparedStatement preparedStatement = null;
                     try {
@@ -263,7 +277,9 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
     public void changeDataSource(View view) {
         ToggleButton tb = (ToggleButton)view;
+        //Changement du flag qui indique dans quel mode on est
         usingLocalData = !tb.isChecked();
+        //Mise à jour des données
         updateData();
     }
 
@@ -271,9 +287,15 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
         Cursor c = null;
         if (usingLocalData) {
+            //Obtention des données locales
             c = mDB.rawQuery("select * from Restaurants;", null);
+            //Mise à jour des listes de restaurants courants
             updateRestaurants(c);
+            //Filtre selon le filtre qui est mis en ce moment
             filterRestaurants(null);
+
+            //Sert à ajuster la liste selon le mode
+            //En mode local, on a un textview qui permet d'afficher des détails d'un resto
             LinearLayout.LayoutParams param = new LinearLayout.LayoutParams(
                    ViewGroup.LayoutParams.MATCH_PARENT,
                     0,
@@ -288,8 +310,12 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
             mListLayout.setLayoutParams(param);
 
         } else {
+            //Exécution de la tâche qui va chercher des données distantes
             DistantData distantData = new DistantData();
             distantData.execute();
+
+            //Sert à ajuster la liste selon le mode
+            //En mode distant, on a seulement une liste de restaurants
             LinearLayout.LayoutParams param = new LinearLayout.LayoutParams(
                     ViewGroup.LayoutParams.MATCH_PARENT,
                     0,
@@ -309,6 +335,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     private void updateRestaurants(Cursor c){
         mRestaurants = new ArrayList<Restaurant>();
         if(usingLocalData){
+            //En local, on initialise l'array de restaurants avec le cursor de la table sqlite locale
             while (c.moveToNext()) {
                 mRestaurants.add(new Restaurant(
                         c.getInt(0),
@@ -325,6 +352,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         else{
             while (true) {
                 try {
+                    //En distant, on initialise l'array de restaurants avec le resultset de la vue myrestaurants distante
                     if (!mResultSet.next()) break;
                     String name = mResultSet.getString(1);
 

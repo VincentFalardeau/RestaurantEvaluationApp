@@ -27,6 +27,10 @@ create view viewrestaurants as select * from restaurants;
 
 grant select on viewrestaurants to public;
 
+
+
+
+
 select nomRestaurant, adresseRestaurant, 
 avg((select idQuality from qualitymap where nomQuality = r.qualiteBouffe)) bouffe, 
 avg((select idQuality from qualitymap where nomQuality = r.qualiteService)) service,
@@ -86,6 +90,8 @@ avg(prixMoyen), avg(nbEtoiles),
 (select count(*) from lemarbre.restaurant rs where rs.nomRestaurant = r.nomRestaurant and rs.adresseRestaurant = r.adresseRestaurant and rs.nbetoiles = 4) fourstar,
 (select count(*) from lemarbre.restaurant rs where rs.nomRestaurant = r.nomRestaurant and rs.adresseRestaurant = r.adresseRestaurant and rs.nbetoiles = 5) fivestar
 from lemarbre.restaurant r group by nomRestaurant, adresseRestaurant;
+
+
 
 
 
