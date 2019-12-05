@@ -97,7 +97,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
             //cause des bugs
             intent.putExtra("mealQuality", mCurrentRestaurant.getMealQuality());
             intent.putExtra("serviceQuality", mCurrentRestaurant.getServiceQuality());
-            intent.putExtra("rating", mCurrentRestaurant.getGeneralRating());
+            intent.putExtra("rating",mCurrentRestaurant.getGeneralRating());
             intent.putExtra("price", String.format ("%,.2f", mCurrentRestaurant.getAveragePrice()) + " $CAD");
             intent.putExtra("voteCount", Integer.toString(mCurrentRestaurant.getVoteCount()));
             intent.putExtra("onestar", Integer.toString(mCurrentRestaurant.getStars()[0]));
@@ -341,10 +341,13 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                     name = String.format("%s'%s", name.substring(0, index + 1), name.substring(index + 1));
                 }
                 String address = mResultSet.getString(2);
-                String mealQualityStr = Restaurant.RATING_IN_WORDS.get(mResultSet.getInt(3) - 1);
-                String serviceQualityStr = Restaurant.RATING_IN_WORDS.get(mResultSet.getInt(4) - 1);
-                Float averagePrice = mResultSet.getFloat(5);
+                int mealQuality = Math.round(mResultSet.getFloat(3)) - 1;
+                String mealQualityStr = Restaurant.RATING_IN_WORDS.get(mealQuality);
+                int serviceQuality = Math.round(mResultSet.getFloat(4)) - 1;
+                String serviceQualityStr = Restaurant.RATING_IN_WORDS.get(serviceQuality);
+                float averagePrice = mResultSet.getFloat(5);
                 float generalRating = mResultSet.getFloat(6);
+                generalRating = (float)Math.round((double)generalRating * 10f) / 10.0f;
                 int nbVotes = mResultSet.getInt(7);
                 int[] stars = new int[5];
                 stars[0] = mResultSet.getInt(8);
@@ -390,7 +393,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        String sql = "select * from myRestaurants2";
+        String sql = "select * from myRestaurants";
         try {
             PreparedStatement ps = connection.prepareStatement(sql);
             mResultSet = ps.executeQuery();
