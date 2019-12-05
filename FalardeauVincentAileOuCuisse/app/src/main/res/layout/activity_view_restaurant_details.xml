@@ -92,32 +92,108 @@
             android:text="0 votes"
             android:textSize="30sp"/>
     </LinearLayout>
-    <TextView
-        android:id="@+id/onestar"
+    <LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="1 étoile:   "/>
+        <ProgressBar
+            android:id="@+id/onestarpb"
+            android:layout_width="100dp"
+            android:layout_height="match_parent"
+            style="@android:style/Widget.ProgressBar.Horizontal"/>
+            <TextView
+                android:id="@+id/onestar"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@android:color/black"
+                android:text="0"/>
+    </LinearLayout>
+
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="1 étoile:   0"/>
-    <TextView
-        android:id="@+id/twostar"
+        android:orientation="horizontal">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="2 étoiles: "/>
+        <ProgressBar
+            android:id="@+id/twostarpb"
+            android:layout_width="100dp"
+            android:layout_height="match_parent"
+            style="@android:style/Widget.ProgressBar.Horizontal"/>
+        <TextView
+            android:id="@+id/twostar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@android:color/black"
+            android:text="0"/>
+    </LinearLayout>
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="2 étoiles: 0"/>
-    <TextView
-        android:id="@+id/treestar"
+        android:orientation="horizontal">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="3 étoiles: "/>
+        <ProgressBar
+            android:id="@+id/treestarpb"
+            android:layout_width="100dp"
+            android:layout_height="match_parent"
+            style="@android:style/Widget.ProgressBar.Horizontal"/>
+        <TextView
+            android:id="@+id/treestar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@android:color/black"
+            android:text="0"/>
+    </LinearLayout>
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="3 étoiles: 0"/>
-    <TextView
-        android:id="@+id/fourstar"
+        android:orientation="horizontal">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="4 étoiles: "/>
+        <ProgressBar
+            android:id="@+id/fourstarpb"
+            android:layout_width="100dp"
+            android:layout_height="match_parent"
+            style="@android:style/Widget.ProgressBar.Horizontal"/>
+        <TextView
+            android:id="@+id/fourstar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@android:color/black"
+            android:text="0"/>
+    </LinearLayout>
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="4 étoiles: 0"/>
-    <TextView
-        android:id="@+id/fivestar"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="20dp"
-        android:text="5 étoiles: 0"/>
+        android:orientation="horizontal"
+        android:layout_marginBottom="10dp">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="5 étoiles: "/>
+        <ProgressBar
+            android:id="@+id/fivestarpb"
+            android:layout_width="100dp"
+            android:layout_height="match_parent"
+            style="@android:style/Widget.ProgressBar.Horizontal"/>
+        <TextView
+            android:id="@+id/fivestar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@android:color/black"
+            android:text="0"/>
+    </LinearLayout>
 
 
     <LinearLayout

@@ -9,8 +9,10 @@ import android.database.sqlite.SQLiteDatabase;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.RatingBar;
 import android.widget.TextView;
@@ -38,7 +40,10 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     private Restaurant mCurrentRestaurant;
 
     private ListView mList;
+    private LinearLayout mListLayout;
     private TextView mDetails;
+    private LinearLayout mDetailsLayout;
+
     private RatingBar mRating;
 
     private ResultSet mResultSet;
@@ -49,11 +54,14 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         setContentView(R.layout.activity_main);
 
         mList = (ListView) findViewById(R.id.restaurant_list);
+        mListLayout = (LinearLayout)findViewById(R.id.list_layout);
         mDetails = (TextView) findViewById(R.id.details);
+        mDetailsLayout = (LinearLayout)findViewById(R.id.details_layout);
         mRating = (RatingBar) findViewById(R.id.rating);
 
         usingLocalData = true;;
         mDB = openOrCreateDatabase(SQLITE_DB_NAME, Context.MODE_PRIVATE,null);
+        //mDB.execSQL("drop table Restaurants");
         mDB.execSQL("create table if not exists Restaurants(" +
                 "idrestaurant integer primary key autoincrement," +
                 "nomRestaurant varchar," +
@@ -279,14 +287,40 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     private void updateData() {
 
         Cursor c = null;
+        //float weight = mDetailsLayout.getWeightSum();
         if (usingLocalData) {
             c = mDB.rawQuery("select * from Restaurants;", null);
             updateRestaurants(c);
             filterRestaurants(null);
+            LinearLayout.LayoutParams param = new LinearLayout.LayoutParams(
+                   ViewGroup.LayoutParams.MATCH_PARENT,
+                    0,
+                    30.0f
+            );
+            mDetailsLayout.setLayoutParams(param);
+            param = new LinearLayout.LayoutParams(
+                    ViewGroup.LayoutParams.MATCH_PARENT,
+                    0,
+                    40.0f
+            );
+            mListLayout.setLayoutParams(param);
 
         } else {
             DistantData distantData = new DistantData();
             distantData.execute();
+            LinearLayout.LayoutParams param = new LinearLayout.LayoutParams(
+                    ViewGroup.LayoutParams.MATCH_PARENT,
+                    0,
+                    0.0f
+            );
+            mDetailsLayout.setLayoutParams(param);
+            param = new LinearLayout.LayoutParams(
+                    ViewGroup.LayoutParams.MATCH_PARENT,
+                    0,
+                    70.0f
+            );
+            mListLayout.setLayoutParams(param);
+
         }
     }
 
