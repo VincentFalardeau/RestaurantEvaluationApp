@@ -81,10 +81,6 @@ public class ViewRestaurantDetailsActivity extends AppCompatActivity {
         String voteCount = intent.getStringExtra("voteCount");
         mVoteCount.setText("(" + rating + ") " + voteCount + " votes");
 
-
-
-
-
         String starStr = intent.getStringExtra("onestar");
         float star = Float.parseFloat(starStr) / Float.parseFloat(voteCount) * 100;
         mOnestarPb.setProgress( Math.round(star));
