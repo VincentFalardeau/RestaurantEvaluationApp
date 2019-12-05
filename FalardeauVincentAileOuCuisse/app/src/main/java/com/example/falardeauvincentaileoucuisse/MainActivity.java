@@ -253,7 +253,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                     PreparedStatement preparedStatement = null;
                     try {
                         preparedStatement = connection.prepareStatement(sql);
-                        preparedStatement.setInt(1, c.getInt(0));
+                        preparedStatement.setInt(1, 0);
                         preparedStatement.setString(2, c.getString(1));
                         preparedStatement.setString(3, c.getString(2));
                         preparedStatement.setString(4, c.getString(3));

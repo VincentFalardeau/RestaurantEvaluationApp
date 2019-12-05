@@ -8,15 +8,24 @@ prixMoyen number(6,2),
 nbEtoiles number(1),
 CONSTRAINT pk_resto PRIMARY KEY(idRestaurant));
 
-commit;
+create sequence seqresto increment by 1 start with 29;
 
-select * from restaurants;
+create or replace 
+trigger airesto 
+before insert on restaurants
+for each row
+begin
+    :new.idRestaurant := seqresto.nextval();
+end;
 
-commit;
+create table QualityMap(
+idquality NUMBER(1),
+nomquality varchar(20),
+constraint pk_qualitymap primary key (idquality));
 
-select * from myrestaurants;
+create view viewrestaurants as select * from restaurants;
 
-drop view myrestaurants;
+grant select on viewrestaurants to public;
 
 create view myrestaurants as
 select idRestaurant, nomRestaurant, adresseRestaurant, 
@@ -30,16 +39,6 @@ prixMoyen, nbEtoiles ,
 (select count(*) from restaurants rs where rs.nomRestaurant = r.nomRestaurant and rs.nbetoiles = 4) fourstar,
 (select count(*) from restaurants rs where rs.nomRestaurant = r.nomRestaurant and rs.nbetoiles = 5) fivestar
 from restaurants r;
-
-commit;
-
-create view viewrestaurants as select * from restaurants;
-
-select * from viewrestaurants;
-
-grant select on viewrestaurants to GauthierB;
-
-select * from GauthierB.orarestaurant;
 
 create view myrestaurants2 as
 select nomRestaurant, adresseRestaurant, 
@@ -71,13 +70,5 @@ prixMoyen, nbEtoiles,
 (select count(*) from GauthierB.orarestaurant rs where rs.nomRestaurant = r2.nomRestaurant and rs.nbetoiles = 5) fivestar
 from GauthierB.orarestaurant r2) group by nomRestaurant, adresseRestaurant;
 
-insert into restaurants values(5, 'restotest', 'avenue fictive', 'Horrible', 'Horrible', 0, 2);
-drop view myrestaurants2;
-select * from myrestaurants2;
+select * from myrestaurants;
 
-grant select on viewrestaurants to public;
-
- CREATE TABLE "FALARDEA"."QUALITYMAP" 
-   (	"IDQUALITY" NUMBER(1,0), 
-	"NOMQUALITY" VARCHAR2(20 BYTE), 
-	 CONSTRAINT "PK_QUALITYMAP" PRIMARY KEY ("IDQUALITY")
